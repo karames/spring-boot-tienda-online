@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Productos</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="nav-center">
+            <a href="/" id="inicio-link">Inicio</a>
+            <a href="productos.html" id="productos-link" style="display:none;">Productos</a>
+            <a href="pedidos.html" id="pedidos-link" style="display:none;">Mis pedidos</a>
+            <a href="admin.html" id="admin-link" style="display:none;">Admin</a>
+            <a href="login.html" id="login-link">Iniciar sesión</a>
+            <a href="register.html" id="register-link">Registrarse</a>
+        </div>
+        <div id="user-menu" class="user-menu" style="display:none;">
+            <button id="user-menu-btn" class="user-menu-btn">
+                <span id="user-info"></span>
+                <span style="margin-left:0.4em;">▼</span>
+            </button>
+            <div id="user-menu-dropdown" class="user-menu-dropdown" style="display:none;">
+                <button onclick="logout()">Cerrar sesión</button>
+            </div>
+        </div>
+    </nav>
+    <h2>Catálogo de Productos</h2>
+    <div class="productos-grid" id="productos-list"></div>
+    <script src="js/app.js"></script>
+    <script src="js/productos.js"></script>
+</body>
+
+</html>

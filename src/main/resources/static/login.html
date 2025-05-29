@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Tienda Online</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+
+<body>
+    <nav>
+        <a href="/">Inicio</a>
+        <a href="login.html">Iniciar sesión</a>
+        <a href="register.html">Registrarse</a>
+    </nav>
+    <h2>Iniciar sesión</h2>
+    <form id="login-form">
+        <input type="text" id="username" placeholder="Usuario" required autocomplete="username">
+        <input type="password" id="password" placeholder="Contraseña" required autocomplete="current-password">
+        <button type="submit">Entrar</button>
+    </form>
+    <div id="login-error" class="error" style="display:none"></div>
+    <script src="js/auth.js"></script>
+</body>
+
+</html>

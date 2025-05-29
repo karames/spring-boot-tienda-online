@@ -1,0 +1,408 @@
+/* Reset básico */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f6fb;
+    margin: 0;
+    padding: 0;
+    color: #222;
+}
+
+h1,
+h2 {
+    color: #2a4d7a;
+    text-align: center;
+}
+
+nav {
+    background: #2a4d7a;
+    padding: 1em;
+    display: flex;
+    justify-content: center;
+    gap: 2em;
+}
+
+nav a,
+nav button {
+    color: #fff;
+    background: none;
+    border: none;
+    font-size: 1em;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 0 0.5em;
+    transition: color 0.2s;
+}
+
+nav a:hover,
+nav button:hover {
+    color: #ffb347;
+}
+
+form {
+    background: #fff;
+    max-width: 350px;
+    margin: 2em auto;
+    padding: 2em 2em 1em 2em;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px #0001;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    padding: 0.7em;
+    border: 1px solid #bfc9d1;
+    border-radius: 5px;
+    font-size: 1em;
+    background: #f8fafc;
+    transition: border 0.2s;
+}
+
+input:focus {
+    border: 1.5px solid #2a4d7a;
+    outline: none;
+}
+
+button[type="submit"],
+button[type="button"],
+.btn-principal {
+    background: #2a4d7a;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.8em;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 0.5em;
+}
+
+button[type="submit"]:hover,
+button[type="button"]:hover,
+.btn-principal:hover {
+    background: #1b3350;
+}
+
+form button[type="submit"],
+form button[type="button"] {
+    background: #2a4d7a;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.8em 1.2em;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    margin-top: 0.5em;
+    box-shadow: 0 1px 4px #0001;
+}
+
+form button[type="submit"]:hover,
+form button[type="button"]:hover {
+    background: #1b3350;
+}
+
+#loginerror,
+.error {
+    color: #d32f2f;
+    text-align: center;
+    margin-top: 0.5em;
+}
+
+/* Tarjetas de producto y pedido sin degradado */
+.producto,
+.pedido {
+    background: #fff;
+    margin: 1em auto;
+    padding: 1.2em 1.5em;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px #0002;
+    max-width: 500px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+}
+
+.producto:hover,
+.pedido:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 6px 24px #0003;
+}
+
+/* Badge de stock */
+.badge-stock {
+    display: inline-block;
+    background: #2a4d7a;
+    color: #fff;
+    border-radius: 12px;
+    font-size: 0.85em;
+    padding: 0.2em 0.7em;
+    margin-left: 0.5em;
+    vertical-align: middle;
+}
+
+/* Mensajes de éxito y error */
+.success {
+    color: #388e3c;
+    background: #e8f5e9;
+    border: 1px solid #b2dfdb;
+    border-radius: 6px;
+    padding: 0.7em 1em;
+    margin: 1em auto;
+    max-width: 350px;
+    text-align: center;
+}
+
+.error {
+    color: #d32f2f;
+    background: #ffebee;
+    border: 1px solid #ffcdd2;
+    border-radius: 6px;
+    padding: 0.7em 1em;
+    margin: 1em auto;
+    max-width: 350px;
+    text-align: center;
+}
+
+/* Botón destacado y botones generales sin degradado */
+.btn-principal,
+button[type="submit"],
+button[type="button"] {
+    background: #2a4d7a !important;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.8em 1.2em;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    margin-top: 0.5em;
+    box-shadow: 0 1px 4px #0001;
+}
+
+.btn-principal:hover,
+button[type="submit"]:hover,
+button[type="button"]:hover {
+    background: #1b3350 !important;
+    box-shadow: 0 2px 8px #0002;
+}
+
+/* Inputs con icono */
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    padding-left: 2.2em;
+    background-repeat: no-repeat;
+    background-position: 0.7em center;
+    background-size: 1.2em;
+}
+
+input#username {
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%232a4d7a" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M12 12c2.7 0 8 1.34 8 4v2H4v-2c0-2.66 5.3-4 8-4zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>');
+}
+
+input#email {
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%232a4d7a" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>');
+}
+
+input#password {
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%232a4d7a" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M12 17a2 2 0 0 0 2-2v-2a2 2 0 0 0-4 0v2a2 2 0 0 0 2 2zm6-6V9a6 6 0 0 0-12 0v2H4v10h16V11h-2zm-8-2a4 4 0 0 1 8 0v2H8V9z"/></svg>');
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.producto,
+.pedido,
+form {
+    animation: fadeIn 0.7s;
+}
+
+.producto,
+.pedido {
+    background: #fff;
+    margin: 1em auto;
+    padding: 1em;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px #0001;
+    max-width: 500px;
+}
+
+.producto b,
+.pedido b {
+    color: #2a4d7a;
+}
+
+ul {
+    padding-left: 1.2em;
+}
+
+/* Grid para productos */
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2em 1.5em;
+    max-width: 1200px;
+    margin: 2em auto;
+    padding: 0 1em;
+}
+
+@media (max-width: 900px) {
+    .productos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .productos-grid {
+        grid-template-columns: 1fr;
+        gap: 1em;
+    }
+}
+
+.producto {
+    margin: 0;
+}
+
+/* Menú de usuario en la barra de navegación */
+.user-menu {
+    position: relative;
+    display: inline-block;
+    margin-left: auto;
+}
+
+.user-menu-btn {
+    background: #fff;
+    color: #2a4d7a;
+    border: none;
+    border-radius: 20px;
+    padding: 0.4em 1.2em 0.4em 1em;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 1px 4px #0001;
+    transition: background 0.2s, color 0.2s;
+    margin-left: 1em;
+}
+
+.user-menu-btn:hover {
+    background: #e3eaf6;
+    color: #1b3350;
+}
+
+.user-menu-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 110%;
+    background: #fff;
+    min-width: 150px;
+    box-shadow: 0 4px 16px #0002;
+    border-radius: 8px;
+    z-index: 100;
+    padding: 0.5em 0;
+}
+
+.user-menu-dropdown button {
+    width: 100%;
+    background: none;
+    border: none;
+    color: #2a4d7a;
+    font-size: 1em;
+    padding: 0.7em 1.2em;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 0;
+    transition: background 0.2s, color 0.2s;
+}
+
+.user-menu-dropdown button:hover {
+    background: #f4f6fb;
+    color: #d32f2f;
+}
+
+/* Estilos de navegación */
+.main-nav {
+    background: #2a4d7a;
+    padding: 1em 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+}
+
+.nav-center {
+    display: flex;
+    gap: 2em;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+#user-menu {
+    margin-left: auto;
+}
+
+#auth-links {
+    margin-left: auto;
+    display: flex;
+    gap: 1em;
+}
+
+.main-nav a,
+#auth-links a {
+    color: #fff;
+    background: none;
+    border: none;
+    font-size: 1em;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 0 0.5em;
+    transition: color 0.2s;
+}
+
+.main-nav a:hover,
+#auth-links a:hover {
+    color: #ffb347;
+}
+
+@media (max-width: 900px) {
+    .nav-center {
+        gap: 1em;
+    }
+}
+
+@media (max-width: 600px) {
+    .main-nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5em;
+    }
+
+    .nav-center {
+        flex-direction: column;
+        gap: 0.5em;
+    }
+
+    #user-menu,
+    #auth-links {
+        margin-left: 0;
+        justify-content: flex-end;
+    }
+}
