@@ -3,24 +3,123 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Login - Tienda Online</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Tienda Online</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 
 <body>
-    <nav>
-        <a href="/">Inicio</a>
-        <a href="login.html">Iniciar sesión</a>
-        <a href="register.html">Registrarse</a>
+    <nav class="main-nav">
+        <div class="nav-center">
+            <a href="/" id="inicio-link">🏠 Inicio</a>
+            <a href="productos.html" id="productos-link" style="display:none;">📦 Productos</a>
+            <a href="pedidos.html" id="pedidos-link" style="display:none;">📋 Mis pedidos</a>
+            <a href="admin.html" id="admin-link" style="display:none;">⚙️ Admin</a>
+            <a href="login.html" id="login-link" class="active">🔐 Iniciar sesión</a>
+            <a href="register.html" id="register-link">📝 Registrarse</a>
+            <a href="documentacion.html" id="docs-link">📚 Documentación</a>
+        </div>
+        <div id="user-menu" class="user-menu" style="display:none;">
+            <button id="user-menu-btn" class="user-menu-btn">
+                <span id="user-info"></span>
+                <span style="margin-left:0.4em;">▼</span>
+            </button>
+            <div id="user-menu-dropdown" class="user-menu-dropdown" style="display:none;">
+                <button onclick="logout()">Cerrar sesión</button>
+            </div>
+        </div>
     </nav>
-    <h2>Iniciar sesión</h2>
-    <form id="login-form">
-        <input type="text" id="username" placeholder="Usuario" required autocomplete="username">
-        <input type="password" id="password" placeholder="Contraseña" required autocomplete="current-password">
-        <button type="submit">Entrar</button>
-    </form>
-    <div id="login-error" class="error" style="display:none"></div>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <header class="auth-header">
+                <h1>🔐 Iniciar Sesión</h1>
+                <p>Accede a tu cuenta para comenzar a comprar</p>
+            </header>
+
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="username" placeholder="Ingresa tu nombre de usuario" required
+                            autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="password" placeholder="Ingresa tu contraseña" required
+                            autocomplete="current-password">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full-width">
+                    🚀 Iniciar Sesión
+                </button>
+            </form>
+
+            <div id="login-error" class="error-message" style="display:none"></div>
+
+            <div class="auth-footer">
+                <p>¿No tienes una cuenta? <a href="register.html" class="link">📝 Regístrate aquí</a></p>
+                <p><a href="/" class="link">🏠 Volver al inicio</a></p>
+            </div>
+
+            <div class="demo-credentials">
+                <h3>🧪 Cuentas de Prueba</h3>
+                <div class="credentials-grid">
+                    <div class="credential-item">
+                        <h4>👨‍💼 Administrador</h4>
+                        <p><strong>Usuario:</strong> admin</p>
+                        <p><strong>Contraseña:</strong> admin</p>
+                        <button type="button" onclick="fillCredentials('admin', 'admin')"
+                            class="btn btn-secondary btn-small">
+                            Usar credenciales
+                        </button>
+                    </div>
+                    <div class="credential-item">
+                        <h4>👤 Cliente</h4>
+                        <p><strong>Usuario:</strong> cliente</p>
+                        <p><strong>Contraseña:</strong> cliente</p>
+                        <button type="button" onclick="fillCredentials('cliente', 'cliente')"
+                            class="btn btn-secondary btn-small">
+                            Usar credenciales
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para rellenar credenciales de prueba
+        function fillCredentials(username, password) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+
+            // Añadir efecto visual
+            const usernameField = document.getElementById('username');
+            const passwordField = document.getElementById('password');
+
+            usernameField.classList.add('highlight');
+            passwordField.classList.add('highlight');
+
+            setTimeout(() => {
+                usernameField.classList.remove('highlight');
+                passwordField.classList.remove('highlight');
+            }, 1000);
+        }
+
+        // Limpiar localStorage al cargar la página de login (opcional)
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Página de login cargada');
+            // localStorage.clear(); // Descomenta si quieres limpiar al acceder al login
+        });
+    </script>
     <script src="js/auth.js"></script>
 </body>
 

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación - Tienda Online</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="nav-center">
+            <a href="/" id="inicio-link">🏠 Inicio</a>
+            <a href="productos.html" id="productos-link" style="display:none;">📦 Productos</a>
+            <a href="pedidos.html" id="pedidos-link" style="display:none;">📋 Mis pedidos</a>
+            <a href="admin.html" id="admin-link" style="display:none;">⚙️ Admin</a>
+            <a href="login.html" id="login-link">🔐 Iniciar sesión</a>
+            <a href="register.html" id="register-link">📝 Registrarse</a>
+            <a href="documentacion.html" id="docs-link" class="active">📚 Documentación</a>
+        </div>
+        <div id="user-menu" class="user-menu" style="display:none;">
+            <button id="user-menu-btn" class="user-menu-btn">
+                <span id="user-info"></span>
+                <span style="margin-left:0.4em;">▼</span>
+            </button>
+            <div id="user-menu-dropdown" class="user-menu-dropdown" style="display:none;">
+                <button onclick="logout()">Cerrar sesión</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="welcome-container">
+        <header class="welcome-header">
+            <h1>📚 Documentación de la Tienda Online</h1>
+            <p>Guía completa para usar la aplicación web de tienda online</p>
+        </header>
+    </div>
+
+    <div class="container">
+
+        <div class="documentation-content">
+            <!-- Información General -->
+            <section class="doc-section">
+                <h2>🎯 Información General</h2>
+                <p>Esta es una aplicación web completa de tienda online desarrollada con <strong>Spring Boot</strong> y
+                    <strong>MongoDB</strong>. Permite a los usuarios navegar productos, realizar pedidos y a los
+                    administradores gestionar el inventario.
+                </p>
+
+                <div class="tech-stack">
+                    <h3>🛠️ Tecnologías utilizadas:</h3>
+                    <ul>
+                        <li><strong>Backend:</strong> Spring Boot, Spring Security, Spring Data MongoDB</li>
+                        <li><strong>Base de datos:</strong> MongoDB (NoSQL)</li>
+                        <li><strong>Frontend:</strong> HTML5, CSS3, JavaScript (Vanilla)</li>
+                        <li><strong>Autenticación:</strong> JWT (JSON Web Tokens)</li>
+                        <li><strong>Seguridad:</strong> Control de roles y endpoints protegidos</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Usuarios y Roles -->
+            <section class="doc-section">
+                <h2>👥 Usuarios y Roles</h2>
+
+                <div class="user-types">
+                    <div class="user-type-card">
+                        <h3>🛡️ Administrador (ADMIN)</h3>
+                        <p><strong>Credenciales por defecto:</strong></p>
+                        <ul>
+                            <li>Usuario: <code>admin</code></li>
+                            <li>Contraseña: <code>admin</code></li>
+                        </ul>
+                        <p><strong>Permisos:</strong></p>
+                        <ul>
+                            <li>✅ Gestión completa de productos (crear, editar, eliminar)</li>
+                            <li>✅ Ver todos los pedidos del sistema</li>
+                            <li>✅ Cambiar estados de pedidos (PENDIENTE ↔ ENVIADO)</li>
+                            <li>✅ Acceso al panel de administración</li>
+                            <li>✅ Ver estadísticas y dashboard</li>
+                        </ul>
+                    </div>
+
+                    <div class="user-type-card">
+                        <h3>🛍️ Cliente (CLIENTE)</h3>
+                        <p><strong>Credenciales por defecto:</strong></p>
+                        <ul>
+                            <li>Usuario: <code>cliente</code></li>
+                            <li>Contraseña: <code>cliente</code></li>
+                        </ul>
+                        <p><strong>Permisos:</strong></p>
+                        <ul>
+                            <li>✅ Ver catálogo de productos</li>
+                            <li>✅ Añadir productos al carrito</li>
+                            <li>✅ Realizar pedidos</li>
+                            <li>✅ Ver historial de pedidos propios</li>
+                            <li>❌ No puede gestionar productos</li>
+                            <li>❌ No puede ver pedidos de otros usuarios</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Funcionalidades -->
+            <section class="doc-section">
+                <h2>🚀 Funcionalidades Principales</h2>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>🛒 Carrito de Compras</h3>
+                        <ul>
+                            <li>Añadir productos con cantidades específicas</li>
+                            <li>Carrito flotante con vista previa</li>
+                            <li>Cálculo automático de totales</li>
+                            <li>Validación de stock disponible</li>
+                            <li>Persistencia durante la sesión</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>📦 Gestión de Productos</h3>
+                        <ul>
+                            <li>Catálogo completo con información detallada</li>
+                            <li>CRUD completo para administradores</li>
+                            <li>Control de inventario y stock</li>
+                            <li>Formularios intuitivos para gestión</li>
+                            <li>Productos de prueba precargados</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>📋 Sistema de Pedidos</h3>
+                        <ul>
+                            <li>Creación de pedidos desde el carrito</li>
+                            <li>Estados: PENDIENTE y ENVIADO</li>
+                            <li>Historial completo para clientes</li>
+                            <li>Gestión administrativa de todos los pedidos</li>
+                            <li>Información detallada de cada pedido</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>🔐 Seguridad</h3>
+                        <ul>
+                            <li>Autenticación JWT</li>
+                            <li>Control de roles granular</li>
+                            <li>Endpoints protegidos por método HTTP</li>
+                            <li>Sesiones seguras</li>
+                            <li>Contraseñas encriptadas</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navegación -->
+            <section class="doc-section">
+                <h2>🧭 Guía de Navegación</h2>
+
+                <div class="navigation-guide">
+                    <div class="nav-step">
+                        <h3>1️⃣ Página Principal</h3>
+                        <p>Punto de entrada con enlaces a todas las secciones. Muestra el estado de autenticación.</p>
+                    </div>
+
+                    <div class="nav-step">
+                        <h3>2️⃣ Registro e Inicio de Sesión</h3>
+                        <p>Crear cuenta nueva o usar credenciales existentes. El sistema reconoce automáticamente el
+                            rol.</p>
+                    </div>
+
+                    <div class="nav-step">
+                        <h3>3️⃣ Productos</h3>
+                        <p>Catálogo completo con carrito de compras. Los admin pueden gestionar productos.</p>
+                    </div>
+
+                    <div class="nav-step">
+                        <h3>4️⃣ Pedidos</h3>
+                        <p>Vista diferenciada: clientes ven sus pedidos, admin ve todos los pedidos.</p>
+                    </div>
+
+                    <div class="nav-step">
+                        <h3>5️⃣ Panel Admin</h3>
+                        <p>Dashboard exclusivo para administradores con estadísticas y gestión avanzada.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- API Endpoints -->
+            <section class="doc-section">
+                <h2>🔌 API REST Endpoints</h2>
+
+                <div class="api-section">
+                    <h3>🔐 Autenticación</h3>
+                    <ul>
+                        <li><code>POST /api/auth/register</code> - Registro de usuarios</li>
+                        <li><code>POST /api/auth/login</code> - Inicio de sesión</li>
+                    </ul>
+                </div>
+
+                <div class="api-section">
+                    <h3>📦 Productos</h3>
+                    <ul>
+                        <li><code>GET /api/productos</code> - Listar productos (público)</li>
+                        <li><code>POST /api/productos</code> - Crear producto (ADMIN)</li>
+                        <li><code>PUT /api/productos/{id}</code> - Actualizar producto (ADMIN)</li>
+                        <li><code>DELETE /api/productos/{id}</code> - Eliminar producto (ADMIN)</li>
+                    </ul>
+                </div>
+
+                <div class="api-section">
+                    <h3>📋 Pedidos</h3>
+                    <ul>
+                        <li><code>GET /api/pedidos</code> - Listar pedidos (rol específico)</li>
+                        <li><code>POST /api/pedidos</code> - Crear pedido (CLIENTE)</li>
+                        <li><code>PUT /api/pedidos/{id}/estado</code> - Cambiar estado (ADMIN)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Datos de Prueba -->
+            <section class="doc-section">
+                <h2>🧪 Datos de Prueba</h2>
+
+                <p>La aplicación se inicializa automáticamente con:</p>
+
+                <div class="test-data">
+                    <h3>👥 Usuarios:</h3>
+                    <ul>
+                        <li><strong>Admin:</strong> admin / admin</li>
+                        <li><strong>Cliente:</strong> cliente / cliente</li>
+                    </ul>
+
+                    <h3>📦 Productos (10 productos):</h3>
+                    <ul>
+                        <li>Laptop Gaming - $1,299.99 (15 unidades)</li>
+                        <li>Smartphone Android - $599.99 (25 unidades)</li>
+                        <li>Auriculares Bluetooth - $199.99 (40 unidades)</li>
+                        <li>Tablet 10 pulgadas - $299.99 (20 unidades)</li>
+                        <li>Teclado Mecánico - $89.99 (30 unidades)</li>
+                        <li>Mouse Gaming - $59.99 (35 unidades)</li>
+                        <li>Monitor 4K - $399.99 (12 unidades)</li>
+                        <li>Webcam HD - $79.99 (18 unidades)</li>
+                        <li>Cargador Inalámbrico - $29.99 (50 unidades)</li>
+                        <li>Disco SSD 1TB - $99.99 (25 unidades)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Instalación -->
+            <section class="doc-section">
+                <h2>⚙️ Instalación y Ejecución</h2>
+
+                <div class="installation-steps">
+                    <h3>📋 Requisitos previos:</h3>
+                    <ul>
+                        <li>Java 17 o superior</li>
+                        <li>Maven 3.6 o superior</li>
+                        <li>MongoDB 4.4 o superior (ejecutándose en puerto 27017)</li>
+                    </ul>
+
+                    <h3>🚀 Ejecutar la aplicación:</h3>
+                    <pre><code>mvn clean spring-boot:run</code></pre>
+
+                    <p><strong>La aplicación estará disponible en:</strong> <a href="http://localhost:8080"
+                            target="_blank">http://localhost:8080</a></p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+
+</html>

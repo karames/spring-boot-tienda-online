@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración inicial - Tienda Online</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <!-- Los estilos están ahora en el archivo CSS principal -->
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="nav-center">
+            <a href="/" id="inicio-link">🏠 Inicio</a>
+            <a href="productos.html" id="productos-link" style="display:none;">📦 Productos</a>
+            <a href="pedidos.html" id="pedidos-link" style="display:none;">📋 Mis pedidos</a>
+            <a href="admin.html" id="admin-link" style="display:none;">⚙️ Admin</a>
+            <a href="documentacion.html" id="docs-link">📚 Documentación</a>
+            <a href="login.html" id="login-link">🔐 Iniciar sesión</a>
+            <a href="register.html" id="register-link">📝 Registrarse</a>
+        </div>
+        <div id="user-menu" class="user-menu" style="display:none;">
+            <button id="user-menu-btn" class="user-menu-btn">
+                <span id="user-info"></span>
+                <span style="margin-left:0.4em;">▼</span>
+            </button>
+            <div id="user-menu-dropdown" class="user-menu-dropdown" style="display:none;">
+                <button onclick="logout()">Cerrar sesión</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="welcome-container">
+        <header class="welcome-header">
+            <h1>⚙️ Configuración Inicial</h1>
+            <p>Configuración del primer administrador de la tienda</p>
+        </header>
+    </div>
+
+    <div class="setup-container">
+        <div id="setup-alert" class="alert" style="display: none;"></div>
+
+        <form id="setup-form">
+            <div class="form-group">
+                <label for="username">Nombre de usuario</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required minlength="6">
+                <small>Mínimo 6 caracteres</small>
+            </div>
+
+            <div class="form-group">
+                <label for="setupKey">Clave de configuración</label>
+                <input type="password" id="setupKey" name="setupKey" required>
+                <small>Clave proporcionada para la configuración inicial</small>
+            </div>
+
+            <button type="submit">Crear administrador</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 20px;">
+            <a href="login.html">Volver a inicio de sesión</a>
+        </p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const setupForm = document.getElementById('setup-form');
+            const setupAlert = document.getElementById('setup-alert');
+
+            setupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const username = document.getElementById('username').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const setupKey = document.getElementById('setupKey').value;
+
+                try {
+                    const response = await fetch('/setup/admin', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            username,
+                            email,
+                            password,
+                            setupKey
+                        })
+                    });
+
+                    const data = await response.text();
+
+                    if (response.ok) {
+                        setupAlert.className = 'alert alert-success';
+                        setupAlert.textContent = 'Administrador creado con éxito. Redirigiendo...';
+                        setupAlert.style.display = 'block';
+                        setupForm.reset();
+
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 2000);
+                    } else {
+                        setupAlert.className = 'alert alert-danger';
+                        setupAlert.textContent = data;
+                        setupAlert.style.display = 'block';
+                    }
+                } catch (error) {
+                    setupAlert.className = 'alert alert-danger';
+                    setupAlert.textContent = 'Error de conexión. Intente nuevamente.';
+                    setupAlert.style.display = 'block';
+                    console.error(error);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

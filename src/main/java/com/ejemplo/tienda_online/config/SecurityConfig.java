@@ -5,6 +5,7 @@ import com.ejemplo.tienda_online.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -47,16 +48,51 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/auth/**",
-                    "/index.html", "/", "/login.html", "/register.html", "/productos.html", "/pedidos.html",
+                    "/setup/admin", // Permitir configuración inicial
+                    "/dev/diagnostico/**", // Endpoints de diagnóstico
+                    "/index.html", "/", "/login.html", "/register.html", "/error.html",
+                    "/documentacion.html", // Permitir acceso a documentación sin autenticación
                     "/css/**", "/js/**", "/img/**", "/favicon.ico", "/favicon.svg",
                     "/error"
                 ).permitAll()
+                // Endpoints de productos
+                .requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/**").hasAnyRole("CLIENTE", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/productos").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasRole("ADMIN")
+                // Endpoints de pedidos
+                .requestMatchers(HttpMethod.GET, "/api/pedidos").hasRole("ADMIN") // Ver todos los pedidos
+                .requestMatchers(HttpMethod.GET, "/api/pedidos/mios").hasRole("CLIENTE") // Ver mis pedidos
+                .requestMatchers(HttpMethod.POST, "/api/pedidos").hasRole("CLIENTE") // Crear pedido
+                .requestMatchers(HttpMethod.PUT, "/api/pedidos/**").hasRole("ADMIN") // Cambiar estado
+                // Páginas web
+                .requestMatchers("/admin.html", "/admin_db.html").hasRole("ADMIN")
+                .requestMatchers("/productos.html", "/pedidos.html").hasAnyRole("CLIENTE", "ADMIN")
                 .anyRequest().authenticated()
             )
             .exceptionHandling(eh -> eh
-                .accessDeniedHandler((request, response, accessDeniedException) ->
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden")
-                )
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    if (request.getHeader("Accept") != null && request.getHeader("Accept").contains("application/json")) {
+                        // Para solicitudes API que esperan JSON
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\":\"Forbidden\",\"message\":\"No tienes permiso para acceder a este recurso\"}");
+                    } else {
+                        // Para solicitudes web, redirigir a la página de error
+                        response.sendRedirect("/error.html");
+                    }
+                })
+                .authenticationEntryPoint((request, response, authException) -> {
+                    if (request.getHeader("Accept") != null && request.getHeader("Accept").contains("application/json")) {
+                        // Para solicitudes API que esperan JSON
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"Debes iniciar sesión para acceder a este recurso\"}");
+                    } else {
+                        // Para solicitudes web, redirigir a la página de login
+                        response.sendRedirect("/login.html");
+                    }
+                })
             )
             .authenticationProvider(daoAuthenticationProvider())
             .addFilterAfter(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

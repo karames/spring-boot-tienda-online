@@ -11,15 +11,17 @@
 <body>
     <nav class="main-nav">
         <div class="nav-center">
-            <a href="/">Inicio</a>
-            <a href="productos.html" style="display:none;">Productos</a>
-            <a href="pedidos.html" style="display:none;">Mis pedidos</a>
-            <a href="admin.html" id="admin-link" style="display:none;">Admin</a>
-            <a href="login.html" id="login-link">Iniciar sesión</a>
-            <a href="register.html" id="register-link">Registrarse</a>
+            <a href="/" id="inicio-link">🏠 Inicio</a>
+            <a href="productos.html" id="productos-link" style="display:none;">📦 Productos</a>
+            <a href="pedidos.html" id="pedidos-link" style="display:none;">📋 Mis pedidos</a>
+            <a href="admin.html" id="admin-link" style="display:none;">⚙️ Admin</a>
+            <a href="login.html" id="login-link">🔐 Iniciar sesión</a>
+            <a href="register.html" id="register-link">📝 Registrarse</a>
+            <a href="documentacion.html" id="docs-link">📚 Documentación</a>
         </div>
         <div id="user-menu" class="user-menu" style="display:none;">
             <button id="user-menu-btn" class="user-menu-btn">
+                <span>👤</span>
                 <span id="user-info"></span>
                 <span style="margin-left:0.4em;">▼</span>
             </button>
@@ -28,8 +30,89 @@
             </div>
         </div>
     </nav>
-    <h1>Bienvenido a la Tienda Online</h1>
-    <div id="global-message" class="success" style="display:none"></div>
+
+    <div class="welcome-container">
+        <header class="welcome-header">
+            <h1>🛍️ Bienvenido a la Tienda Online</h1>
+            <p>Tu destino para productos tecnológicos de calidad</p>
+        </header>
+
+        <div class="welcome-content">
+            <div class="welcome-section">
+                <h2>✨ Características Principales</h2>
+                <div class="features-list">
+                    <div class="feature-item">
+                        <span class="feature-icon">🛒</span>
+                        <div class="feature-text">
+                            <h3>Carrito Inteligente</h3>
+                            <p>Añade productos y gestiona tu carrito de compras de forma fácil</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📦</span>
+                        <div class="feature-text">
+                            <h3>Amplio Catálogo</h3>
+                            <p>Encuentra laptops, smartphones, accesorios y más</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🔐</span>
+                        <div class="feature-text">
+                            <h3>Compras Seguras</h3>
+                            <p>Sistema de autenticación y pedidos protegidos</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📋</span>
+                        <div class="feature-text">
+                            <h3>Historial de Pedidos</h3>
+                            <p>Rastrea tus compras y el estado de tus pedidos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="welcome-section">
+                <h2>🚀 Comienza Ahora</h2>
+                <div class="action-cards">
+                    <div class="action-card">
+                        <h3>👤 Usuarios Nuevos</h3>
+                        <p>Crea tu cuenta y comienza a comprar</p>
+                        <a href="register.html" class="btn btn-primary">Registrarse</a>
+                    </div>
+                    <div class="action-card">
+                        <h3>🔑 Ya tienes cuenta</h3>
+                        <p>Inicia sesión para acceder a tu cuenta</p>
+                        <a href="login.html" class="btn btn-secondary">Iniciar Sesión</a>
+                    </div>
+                    <div class="action-card">
+                        <h3>🛍️ Explorar Productos</h3>
+                        <p>Ve nuestro catálogo de productos disponibles</p>
+                        <a href="productos.html" class="btn btn-info">Ver Productos</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="welcome-section">
+                <h2>📱 Usuarios de Prueba</h2>
+                <div class="test-users">
+                    <div class="test-user-card">
+                        <h3>🛡️ Administrador</h3>
+                        <p><strong>Usuario:</strong> admin</p>
+                        <p><strong>Contraseña:</strong> admin</p>
+                        <p>Acceso completo a gestión de productos y pedidos</p>
+                    </div>
+                    <div class="test-user-card">
+                        <h3>🛒 Cliente</h3>
+                        <p><strong>Usuario:</strong> cliente</p>
+                        <p><strong>Contraseña:</strong> cliente</p>
+                        <p>Comprar productos y gestionar pedidos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="js/app.js"></script>
 </body>
 

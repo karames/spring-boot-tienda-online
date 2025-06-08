@@ -16,6 +16,7 @@ public class Pedido {
     private String id;
     private String usuarioId;
     private List<ItemPedido> productos;
+    private double total;
     private Instant fecha;
     private EstadoPedido estado;
 
@@ -26,10 +27,13 @@ public class Pedido {
     public static class ItemPedido {
         private String productoId;
         private int cantidad;
+        private double precioUnitario; // Precio al momento de la compra
     }
 
     public enum EstadoPedido {
         PENDIENTE,
-        ENVIADO
+        ENVIADO,
+        ENTREGADO,
+        CANCELADO
     }
 }

@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Admin - Gestión</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Tienda Online</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
@@ -11,15 +12,17 @@
 <body>
     <nav class="main-nav">
         <div class="nav-center">
-            <a href="/" id="inicio-link">Inicio</a>
-            <a href="productos.html" id="productos-link" style="display:none;">Productos</a>
-            <a href="pedidos.html" id="pedidos-link" style="display:none;">Mis pedidos</a>
-            <a href="admin.html" id="admin-link" style="display:none;">Admin</a>
-            <a href="login.html" id="login-link">Iniciar sesión</a>
-            <a href="register.html" id="register-link">Registrarse</a>
+            <a href="/" id="inicio-link">🏠 Inicio</a>
+            <a href="productos.html" id="productos-link" style="display:none;">📦 Productos</a>
+            <a href="pedidos.html" id="pedidos-link" style="display:none;">📋 Mis pedidos</a>
+            <a href="admin.html" id="admin-link" style="display:none;">⚙️ Admin</a>
+            <a href="login.html" id="login-link">🔐 Iniciar sesión</a>
+            <a href="register.html" id="register-link">📝 Registrarse</a>
+            <a href="documentacion.html" id="docs-link">📚 Documentación</a>
         </div>
         <div id="user-menu" class="user-menu" style="display:none;">
             <button id="user-menu-btn" class="user-menu-btn">
+                <span>👤</span>
                 <span id="user-info"></span>
                 <span style="margin-left:0.4em;">▼</span>
             </button>
@@ -28,8 +31,142 @@
             </div>
         </div>
     </nav>
-    <h2>Gestión de Pedidos (Admin)</h2>
-    <div id="admin-pedidos"></div>
+
+    <div class="welcome-container">
+        <header class="welcome-header">
+            <h1>🛠️ Panel de Administración</h1>
+            <p>Gestiona productos, pedidos y usuarios de la tienda online</p>
+        </header>
+    </div>
+
+    <div class="admin-container">
+
+        <!-- Navegación de secciones admin -->
+        <nav class="admin-nav">
+            <button class="admin-tab active" data-section="dashboard">📊 Dashboard</button>
+            <button class="admin-tab" data-section="productos">📦 Gestionar Productos</button>
+            <button class="admin-tab" data-section="pedidos">📋 Gestionar Pedidos</button>
+            <button class="admin-tab" data-section="usuarios">👥 Ver Usuarios</button>
+        </nav>
+
+        <!-- Dashboard -->
+        <section id="dashboard-section" class="admin-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-productos">-</div>
+                    <div class="stat-label">Total Productos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-pedidos">-</div>
+                    <div class="stat-label">Total Pedidos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pedidos-pendientes">-</div>
+                    <div class="stat-label">Pedidos Pendientes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-usuarios">-</div>
+                    <div class="stat-label">Total Usuarios</div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h3>🚀 Acciones Rápidas</h3>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="switchSection('productos')">
+                        ➕ Añadir Producto
+                    </button>
+                    <button class="btn btn-secondary" onclick="switchSection('pedidos')">
+                        📋 Ver Pedidos Pendientes
+                    </button>
+                    <button class="btn btn-info" onclick="loadDashboard()">
+                        🔄 Actualizar Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <div class="admin-tools">
+                <h3>🛠️ Herramientas de Administración</h3>
+                <div class="tool-section">
+                    <h4>Gestión de Productos:</h4>
+                    <button class="btn btn-success" onclick="adminDataManager.initProductos()">
+                        🆕 Crear Productos de Prueba
+                    </button>
+                    <button class="btn btn-danger" onclick="adminDataManager.clearProductos()">
+                        🗑️ Eliminar Todos los Productos
+                    </button>
+                </div>
+
+                <div class="tool-section">
+                    <h4>Gestión de Usuarios:</h4>
+                    <button class="btn btn-success" onclick="adminDataManager.initUsers()">
+                        👥 Inicializar Usuarios de Prueba
+                    </button>
+                    <button class="btn btn-warning" onclick="adminDataManager.cleanupUsers()">
+                        🧹 Limpiar Usuarios (excepto admin)
+                    </button>
+                    <button class="btn btn-danger" onclick="adminDataManager.resetAdmin()">
+                        🔄 Restablecer Admin
+                    </button>
+                </div>
+
+                <div class="tool-section">
+                    <h4>Configuración Completa:</h4>
+                    <button class="btn btn-primary" onclick="adminDataManager.setupCompleteSystem()">
+                        ⚙️ Configurar Sistema Completo
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gestión de Productos -->
+        <section id="productos-section" class="admin-section" style="display:none;">
+            <h2>📦 Gestión de Productos</h2>
+            <p>Desde aquí puedes crear, editar y eliminar productos. También puedes gestionar el stock.</p>
+            <div class="section-link">
+                <a href="productos.html" class="btn btn-primary">🔗 Ir a Gestión Completa de Productos</a>
+            </div>
+        </section>
+
+        <!-- Gestión de Pedidos -->
+        <section id="pedidos-section" class="admin-section" style="display:none;">
+            <h2>📋 Gestión de Pedidos</h2>
+
+            <div class="filter-bar">
+                <select id="estado-filter">
+                    <option value="">Todos los estados</option>
+                    <option value="PENDIENTE">Pendientes</option>
+                    <option value="ENVIADO">Enviados</option>
+                    <option value="ENTREGADO">Entregados</option>
+                    <option value="CANCELADO">Cancelados</option>
+                </select>
+                <button onclick="loadPedidos()" class="btn btn-secondary">🔍 Filtrar</button>
+            </div>
+
+            <div id="admin-pedidos" class="pedidos-list">
+                <div class="loading">Cargando pedidos...</div>
+            </div>
+        </section>
+
+        <!-- Vista de Usuarios -->
+        <section id="usuarios-section" class="admin-section" style="display:none;">
+            <h2>👥 Usuarios Registrados</h2>
+            <div class="section-actions">
+                <button class="btn btn-primary" onclick="adminDataManager.loadAllUsers()">
+                    🔄 Recargar Usuarios
+                </button>
+            </div>
+            <div id="users-list" class="usuarios-list">
+                <div class="loading">Cargando usuarios...</div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Mensajes de notificación -->
+    <div id="notification" class="notification" style="display:none;"></div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/admin-data.js"></script>
     <script src="js/admin.js"></script>
 </body>
 

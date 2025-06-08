@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Productos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Tienda Online</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
@@ -11,15 +12,17 @@
 <body>
     <nav class="main-nav">
         <div class="nav-center">
-            <a href="/" id="inicio-link">Inicio</a>
-            <a href="productos.html" id="productos-link" style="display:none;">Productos</a>
-            <a href="pedidos.html" id="pedidos-link" style="display:none;">Mis pedidos</a>
-            <a href="admin.html" id="admin-link" style="display:none;">Admin</a>
-            <a href="login.html" id="login-link">Iniciar sesión</a>
-            <a href="register.html" id="register-link">Registrarse</a>
+            <a href="/" id="inicio-link">🏠 Inicio</a>
+            <a href="productos.html" id="productos-link" style="display:none;">📦 Productos</a>
+            <a href="pedidos.html" id="pedidos-link" style="display:none;">📋 Mis pedidos</a>
+            <a href="admin.html" id="admin-link" style="display:none;">⚙️ Admin</a>
+            <a href="login.html" id="login-link">🔐 Iniciar sesión</a>
+            <a href="register.html" id="register-link">📝 Registrarse</a>
+            <a href="documentacion.html" id="docs-link">📚 Documentación</a>
         </div>
         <div id="user-menu" class="user-menu" style="display:none;">
             <button id="user-menu-btn" class="user-menu-btn">
+                <span>👤</span>
                 <span id="user-info"></span>
                 <span style="margin-left:0.4em;">▼</span>
             </button>
@@ -28,8 +31,19 @@
             </div>
         </div>
     </nav>
-    <h2>Catálogo de Productos</h2>
-    <div class="productos-grid" id="productos-list"></div>
+
+    <div class="welcome-container">
+        <header class="welcome-header">
+            <h1>📦 Catálogo de Productos</h1>
+            <p>Explora nuestra selección de productos tecnológicos</p>
+        </header>
+
+        <div class="container">
+            <div id="message-container" class="message-container" style="display:none;"></div>
+            <div class="productos-grid" id="productos-list"></div>
+        </div>
+    </div>
+    <script src="js/auth.js"></script>
     <script src="js/app.js"></script>
     <script src="js/productos.js"></script>
 </body>

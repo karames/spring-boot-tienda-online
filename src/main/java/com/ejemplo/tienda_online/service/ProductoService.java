@@ -16,16 +16,27 @@ public class ProductoService {
         return productoRepository.findAll();
     }
 
+    public Producto getById(String id) {
+        return productoRepository.findById(id).orElse(null);
+    }
+
     public Producto create(Producto producto) {
         return productoRepository.save(producto);
     }
 
     public Producto update(String id, Producto producto) {
+        if (!productoRepository.existsById(id)) {
+            return null;
+        }
         producto.setId(id);
         return productoRepository.save(producto);
     }
 
-    public void delete(String id) {
+    public boolean delete(String id) {
+        if (!productoRepository.existsById(id)) {
+            return false;
+        }
         productoRepository.deleteById(id);
+        return true;
     }
 }

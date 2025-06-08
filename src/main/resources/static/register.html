@@ -3,49 +3,175 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Registro - Tienda Online</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta - Tienda Online</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 
 <body>
-    <nav>
-        <a href="/">Inicio</a>
-        <a href="login.html">Iniciar sesión</a>
-        <a href="register.html">Registrarse</a>
+    <nav class="main-nav">
+        <div class="nav-center">
+            <a href="/" id="inicio-link">🏠 Inicio</a>
+            <a href="productos.html" id="productos-link" style="display:none;">📦 Productos</a>
+            <a href="pedidos.html" id="pedidos-link" style="display:none;">📋 Mis pedidos</a>
+            <a href="admin.html" id="admin-link" style="display:none;">⚙️ Admin</a>
+            <a href="login.html" id="login-link">🔐 Iniciar sesión</a>
+            <a href="register.html" id="register-link" class="active">📝 Registrarse</a>
+            <a href="documentacion.html" id="docs-link">📚 Documentación</a>
+        </div>
+        <div id="user-menu" class="user-menu" style="display:none;">
+            <button id="user-menu-btn" class="user-menu-btn">
+                <span id="user-info"></span>
+                <span style="margin-left:0.4em;">▼</span>
+            </button>
+            <div id="user-menu-dropdown" class="user-menu-dropdown" style="display:none;">
+                <button onclick="logout()">Cerrar sesión</button>
+            </div>
+        </div>
     </nav>
-    <h2>Crear cuenta</h2>
-    <form id="register-form">
-        <input type="text" id="username" placeholder="Usuario" required autocomplete="username">
-        <input type="email" id="email" placeholder="Correo electrónico" required autocomplete="email">
-        <input type="password" id="password" placeholder="Contraseña" required autocomplete="new-password">
-        <button type="submit">Registrarse</button>
-    </form>
-    <div id="register-error" class="error" style="display:none"></div>
-    <div id="register-success" class="success" style="display:none"></div>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <header class="auth-header">
+                <h1>📝 Crear Cuenta</h1>
+                <p>Únete a nuestra tienda online y comienza a comprar</p>
+            </header>
+
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label for="username">Nombre de Usuario</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="username" placeholder="Elige un nombre de usuario único" required
+                            autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">📧</span>
+                        <input type="email" id="email" placeholder="tu@email.com" required autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="password" placeholder="Crea una contraseña segura" required
+                            autocomplete="new-password">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full-width">
+                    🚀 Crear Cuenta
+                </button>
+            </form>
+
+            <div id="register-error" class="error-message" style="display:none"></div>
+            <div id="register-success" class="success-message" style="display:none"></div>
+
+            <div class="auth-footer">
+                <p>¿Ya tienes una cuenta? <a href="login.html" class="link">🔐 Inicia sesión aquí</a></p>
+                <p><a href="/" class="link">🏠 Volver al inicio</a></p>
+            </div>
+
+            <div class="demo-credentials">
+                <h3>ℹ️ Información</h3>
+                <div
+                    style="text-align: center; padding: 1em; background: white; border-radius: 8px; border: 1px solid #dee2e6;">
+                    <p style="margin: 0; color: #666; font-size: 0.9em;">
+                        Después del registro serás redirigido al inicio.<br>
+                        Puedes usar el login para acceder con tu nueva cuenta.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.getElementById('register-form').addEventListener('submit', async function (e) {
             e.preventDefault();
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const res = await fetch('/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password })
-            });
-            if (res.ok) {
-                document.getElementById('register-success').textContent = '¡Registro exitoso! Ahora puedes iniciar sesión.';
-                document.getElementById('register-success').style.display = '';
-                document.getElementById('register-error').textContent = '';
-                document.getElementById('register-error').style.display = 'none';
-                setTimeout(() => window.location.href = '/', 1500);
-            } else {
-                document.getElementById('register-error').textContent = 'No se pudo registrar. ¿Usuario o email ya existen?';
-                document.getElementById('register-error').style.display = '';
-                document.getElementById('register-success').textContent = '';
-                document.getElementById('register-success').style.display = 'none';
+
+            // Mostrar indicador de carga
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '🔄 Creando cuenta...';
+            submitBtn.disabled = true;
+
+            // Ocultar mensajes previos
+            document.getElementById('register-error').style.display = 'none';
+            document.getElementById('register-success').style.display = 'none';
+
+            try {
+                const username = document.getElementById('username').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                const res = await fetch('/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                if (res.ok) {
+                    // Éxito
+                    document.getElementById('register-success').textContent = '✅ ¡Registro exitoso! Redirigiendo al inicio...';
+                    document.getElementById('register-success').style.display = 'block';
+
+                    submitBtn.textContent = '✅ ¡Cuenta creada!';
+                    submitBtn.style.background = '#28a745';
+
+                    setTimeout(() => window.location.href = '/', 2000);
+
+                } else {
+                    // Error
+                    let msg = 'No se pudo registrar. ¿Usuario o email ya existen?';
+                    try {
+                        const err = await res.json();
+                        if (err && err.message) msg = err.message;
+                    } catch (e) {
+                        console.error('Error parsing error response:', e);
+                    }
+
+                    document.getElementById('register-error').textContent = '❌ ' + msg;
+                    document.getElementById('register-error').style.display = 'block';
+
+                    // Restaurar botón
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                    submitBtn.style.background = '';
+                }
+
+            } catch (error) {
+                console.error('Error durante el registro:', error);
+
+                document.getElementById('register-error').textContent = '❌ Error de conexión. Por favor, intenta nuevamente.';
+                document.getElementById('register-error').style.display = 'block';
+
+                // Restaurar botón
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                submitBtn.style.background = '';
+            }
+        });
+
+        // Verificar si ya está logueado
+        document.addEventListener('DOMContentLoaded', () => {
+            const jwt = localStorage.getItem('jwt');
+            const role = localStorage.getItem('role');
+
+            if (jwt && role) {
+                // Ya está logueado, redirigir según el rol
+                if (role === 'ADMIN') {
+                    window.location.href = 'admin.html';
+                } else if (role === 'CLIENTE') {
+                    window.location.href = 'productos.html';
+                } else {
+                    window.location.href = '/';
+                }
             }
         });
     </script>
