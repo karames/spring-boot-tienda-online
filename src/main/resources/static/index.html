@@ -30,88 +30,105 @@
             </div>
         </div>
     </nav>
-
     <div class="welcome-container">
         <header class="welcome-header">
-            <h1>🛍️ Bienvenido a la Tienda Online</h1>
-            <p>Tu destino para productos tecnológicos de calidad</p>
+            <h1>🏠 Bienvenido a la Tienda Online</h1>
+            <div class="welcome-subtitle no-bg">Compra fácil, rápido y seguro.</div>
+            <p class="welcome-extra">¡Explora todas las funcionalidades!</p>
         </header>
 
-        <div class="welcome-content">
-            <div class="welcome-section">
+        <section class="welcome-section features-section section-box">
+            <div class="section-header">
                 <h2>✨ Características Principales</h2>
-                <div class="features-list">
-                    <div class="feature-item">
-                        <span class="feature-icon">🛒</span>
-                        <div class="feature-text">
-                            <h3>Carrito Inteligente</h3>
-                            <p>Añade productos y gestiona tu carrito de compras de forma fácil</p>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">📦</span>
-                        <div class="feature-text">
-                            <h3>Amplio Catálogo</h3>
-                            <p>Encuentra laptops, smartphones, accesorios y más</p>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">🔐</span>
-                        <div class="feature-text">
-                            <h3>Compras Seguras</h3>
-                            <p>Sistema de autenticación y pedidos protegidos</p>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">📋</span>
-                        <div class="feature-text">
-                            <h3>Historial de Pedidos</h3>
-                            <p>Rastrea tus compras y el estado de tus pedidos</p>
-                        </div>
-                    </div>
+                <p class="section-description">Descubre las funcionalidades que hacen especial a nuestra tienda online
+                </p>
+            </div>
+            <div class="features-grid-responsive">
+                <div class="feature-card-simple">
+                    <div class="feature-icon">🛒</div>
+                    <h3>Carrito de Compras</h3>
+                    <p>Añade productos, gestiona cantidades y realiza pedidos de forma intuitiva.</p>
+                </div>
+                <div class="feature-card-simple">
+                    <div class="feature-icon">📦</div>
+                    <h3>Catálogo Moderno</h3>
+                    <p>Explora productos con imágenes, filtros y detalles completos.</p>
+                </div>
+                <div class="feature-card-simple">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Seguridad</h3>
+                    <p>Autenticación segura y control de roles.</p>
+                </div>
+                <div class="feature-card-simple">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>Panel Admin</h3>
+                    <p>Gestiona productos, pedidos y usuarios fácilmente.</p>
                 </div>
             </div>
+        </section>
 
-            <div class="welcome-section">
-                <h2>🚀 Comienza Ahora</h2>
-                <div class="action-cards">
-                    <div class="action-card">
-                        <h3>👤 Usuarios Nuevos</h3>
-                        <p>Crea tu cuenta y comienza a comprar</p>
-                        <a href="register.html" class="btn btn-primary">Registrarse</a>
-                    </div>
-                    <div class="action-card">
-                        <h3>🔑 Ya tienes cuenta</h3>
-                        <p>Inicia sesión para acceder a tu cuenta</p>
-                        <a href="login.html" class="btn btn-secondary">Iniciar Sesión</a>
-                    </div>
-                    <div class="action-card">
-                        <h3>🛍️ Explorar Productos</h3>
-                        <p>Ve nuestro catálogo de productos disponibles</p>
-                        <a href="productos.html" class="btn btn-info">Ver Productos</a>
-                    </div>
-                </div>
-            </div>
+        <div class="section-divider"></div>
 
-            <div class="welcome-section">
-                <h2>📱 Usuarios de Prueba</h2>
-                <div class="test-users">
-                    <div class="test-user-card">
-                        <h3>🛡️ Administrador</h3>
-                        <p><strong>Usuario:</strong> admin</p>
-                        <p><strong>Contraseña:</strong> admin</p>
-                        <p>Acceso completo a gestión de productos y pedidos</p>
-                    </div>
-                    <div class="test-user-card">
-                        <h3>🛒 Cliente</h3>
-                        <p><strong>Usuario:</strong> cliente</p>
-                        <p><strong>Contraseña:</strong> cliente</p>
-                        <p>Comprar productos y gestionar pedidos</p>
-                    </div>
+        <section class="welcome-section getting-started-section section-box">
+            <div class="section-header">
+                <h2>🚀 Primeros Pasos</h2>
+                <p class="section-description">Comienza a usar la tienda en minutos</p>
+            </div>
+            <div class="info-box-simple getting-started-box">
+                <div class="info-icon">💡</div>
+                <div class="info-content">
+                    <h4>¿Cómo empezar?</h4>
+                    <ul>
+                        <li>Inicia sesión con una cuenta existente o regístrate como nuevo usuario.</li>
+                        <li>Explora el catálogo y añade productos al carrito.</li>
+                        <li>Realiza tu primer pedido y consulta el historial.</li>
+                    </ul>
                 </div>
             </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <section class="welcome-section test-users-section section-box">
+            <div class="section-header">
+                <h2>🧪 Usuarios de Prueba</h2>
+                <p class="section-description">Utiliza estas credenciales para probar el sistema</p>
+            </div>
+            <div class="users-grid-responsive">
+                <div class="user-card-simple admin-card">
+                    <h3>👨‍💼 Administrador</h3>
+                    <div class="credentials-simple">
+                        <p><strong>Usuario:</strong> <code>admin</code></p>
+                        <p><strong>Contraseña:</strong> <code>admin</code></p>
+                    </div>
+                    <ul>
+                        <li>Gestión total de productos y pedidos</li>
+                        <li>Acceso al panel de administración</li>
+                    </ul>
+                </div>
+                <div class="user-card-simple client-card">
+                    <h3>👤 Cliente</h3>
+                    <div class="credentials-simple">
+                        <p><strong>Usuario:</strong> <code>cliente</code></p>
+                        <p><strong>Contraseña:</strong> <code>cliente</code></p>
+                    </div>
+                    <ul>
+                        <li>Ver catálogo y añadir productos al carrito</li>
+                        <li>Realizar pedidos y ver historial propio</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="general-navigation-info">
+            <p>👆 Usa el menú superior para <strong>iniciar sesión</strong> o <strong>registrarte</strong></p>
         </div>
-    </div>
+    </div> <!-- PIE DE PÁGINA -->
+    <footer class="modern-footer">
+        <div class="footer-bottom">
+            <p>&copy; 2025 Tienda Online - Desarrollado con Spring Boot</p>
+        </div>
+    </footer>
 
     <script src="js/app.js"></script>
 </body>

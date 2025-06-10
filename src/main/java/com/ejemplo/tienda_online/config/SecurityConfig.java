@@ -38,15 +38,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {        http
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/auth/**")
+                .ignoringRequestMatchers("/api/auth/**", "/auth/**")
                 .disable()
             )
-            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))            .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/api/auth/**", // Permitir endpoints de autenticación
                     "/auth/**",
                     "/setup/admin", // Permitir configuración inicial
                     "/dev/diagnostico/**", // Endpoints de diagnóstico

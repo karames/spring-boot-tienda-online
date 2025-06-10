@@ -31,46 +31,43 @@
             </div>
         </div>
     </nav>
-
     <div class="welcome-container">
-        <header class="welcome-header">
+        <header class="simple-header">
             <h1>🛠️ Panel de Administración</h1>
             <p>Gestiona productos, pedidos y usuarios de la tienda online</p>
         </header>
     </div>
 
-    <div class="admin-container">
-
-        <!-- Navegación de secciones admin -->
-        <nav class="admin-nav">
-            <button class="admin-tab active" data-section="dashboard">📊 Dashboard</button>
-            <button class="admin-tab" data-section="productos">📦 Gestionar Productos</button>
-            <button class="admin-tab" data-section="pedidos">📋 Gestionar Pedidos</button>
-            <button class="admin-tab" data-section="usuarios">👥 Ver Usuarios</button>
+    <div class="admin-container-simple"> <!-- Navegación de secciones admin -->
+        <nav class="admin-nav-simple">
+            <button class="admin-tab-simple active" data-section="dashboard">📊 Dashboard</button>
+            <button class="admin-tab-simple" data-section="productos">📦 Gestionar Productos</button>
+            <button class="admin-tab-simple" data-section="pedidos">📋 Gestionar Pedidos</button>
+            <button class="admin-tab-simple" data-section="usuarios">👥 Ver Usuarios</button>
         </nav>
 
         <!-- Dashboard -->
-        <section id="dashboard-section" class="admin-section">
-            <div class="stats-grid">
-                <div class="stat-card">
+        <section id="dashboard-section" class="admin-section-simple">
+            <div class="stats-grid-simple">
+                <div class="stat-card-simple">
                     <div class="stat-number" id="total-productos">-</div>
                     <div class="stat-label">Total Productos</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card-simple">
                     <div class="stat-number" id="total-pedidos">-</div>
                     <div class="stat-label">Total Pedidos</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card-simple">
                     <div class="stat-number" id="pedidos-pendientes">-</div>
                     <div class="stat-label">Pedidos Pendientes</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card-simple">
                     <div class="stat-number" id="total-usuarios">-</div>
                     <div class="stat-label">Total Usuarios</div>
                 </div>
             </div>
 
-            <div class="quick-actions">
+            <div class="quick-actions-simple">
                 <h3>🚀 Acciones Rápidas</h3>
                 <div class="action-buttons">
                     <button class="btn btn-primary" onclick="switchSection('productos')">

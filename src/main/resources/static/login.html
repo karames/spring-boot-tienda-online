@@ -30,70 +30,85 @@
             </div>
         </div>
     </nav>
-
-    <div class="auth-container">
-        <div class="auth-card">
-            <header class="auth-header">
-                <h1>🔐 Iniciar Sesión</h1>
-                <p>Accede a tu cuenta para comenzar a comprar</p>
-            </header>
-
-            <form id="login-form" class="auth-form">
-                <div class="form-group">
-                    <label for="username">Usuario</label>
-                    <div class="input-with-icon">
-                        <span class="input-icon">👤</span>
-                        <input type="text" id="username" placeholder="Ingresa tu nombre de usuario" required
-                            autocomplete="username">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Contraseña</label>
-                    <div class="input-with-icon">
-                        <span class="input-icon">🔒</span>
-                        <input type="password" id="password" placeholder="Ingresa tu contraseña" required
-                            autocomplete="current-password">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-full-width">
-                    🚀 Iniciar Sesión
-                </button>
-            </form>
-
-            <div id="login-error" class="error-message" style="display:none"></div>
-
-            <div class="auth-footer">
-                <p>¿No tienes una cuenta? <a href="register.html" class="link">📝 Regístrate aquí</a></p>
-                <p><a href="/" class="link">🏠 Volver al inicio</a></p>
+    <div class="welcome-container">
+        <!-- SECCIÓN: INICIAR SESIÓN (fuera del cuadro principal) -->
+        <div class="login-standalone-form">
+            <div class="section-header">
+                <h2>🔐 Iniciar Sesión</h2>
+                <p class="section-description">Accede a tu cuenta para comenzar a comprar</p>
             </div>
-
-            <div class="demo-credentials">
-                <h3>🧪 Cuentas de Prueba</h3>
-                <div class="credentials-grid">
-                    <div class="credential-item">
-                        <h4>👨‍💼 Administrador</h4>
-                        <p><strong>Usuario:</strong> admin</p>
-                        <p><strong>Contraseña:</strong> admin</p>
-                        <button type="button" onclick="fillCredentials('admin', 'admin')"
-                            class="btn btn-secondary btn-small">
-                            Usar credenciales
-                        </button>
+            <div class="auth-card" style="box-shadow:none;background:none;padding-top:0;max-width:500px;width:100%;">
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="username">Usuario</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="username" placeholder="Ingresa tu nombre de usuario" required
+                                autocomplete="username">
+                        </div>
                     </div>
-                    <div class="credential-item">
-                        <h4>👤 Cliente</h4>
-                        <p><strong>Usuario:</strong> cliente</p>
-                        <p><strong>Contraseña:</strong> cliente</p>
-                        <button type="button" onclick="fillCredentials('cliente', 'cliente')"
-                            class="btn btn-secondary btn-small">
-                            Usar credenciales
-                        </button>
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" id="password" placeholder="Ingresa tu contraseña" required
+                                autocomplete="current-password">
+                        </div>
                     </div>
+                    <button type="submit" class="btn btn-primary btn-full-width">
+                        🚀 Iniciar Sesión
+                    </button>
+                </form>
+                <div id="login-error" class="error-message" style="display:none"></div>
+                <div class="auth-footer" style="margin-top:0.3em;">
+                    <p>¿No tienes una cuenta? <a href="register.html" class="link">📝 Regístrate aquí</a></p>
                 </div>
             </div>
         </div>
+
+        <!-- SEPARADOR VISUAL -->
+        <div class="section-divider" style="margin:1em 0 1.5em 0;"></div>
+
+        <!-- SECCIÓN: CUENTAS DE PRUEBA -->
+        <section class="welcome-section demo-accounts-section section-box" style="margin-top:1em;">
+            <div class="section-header">
+                <h2>🧪 Cuentas de Prueba</h2>
+                <p class="section-description">Utiliza estas credenciales para probar rápidamente las funcionalidades
+                </p>
+            </div>
+            <div class="users-grid-responsive">
+                <div class="user-card-simple admin-card">
+                    <h3>👨‍💼 Administrador</h3>
+                    <div class="credentials-simple">
+                        <p><strong>Usuario:</strong> <code>admin</code></p>
+                        <p><strong>Contraseña:</strong> <code>admin</code></p>
+                    </div>
+                    <button type="button" onclick="fillCredentials('admin', 'admin')"
+                        class="btn btn-primary btn-full-width" style="margin-top: 1rem;">
+                        ✨ Usar credenciales
+                    </button>
+                </div>
+                <div class="user-card-simple client-card">
+                    <h3>👤 Cliente</h3>
+                    <div class="credentials-simple">
+                        <p><strong>Usuario:</strong> <code>cliente</code></p>
+                        <p><strong>Contraseña:</strong> <code>cliente</code></p>
+                    </div>
+                    <button type="button" onclick="fillCredentials('cliente', 'cliente')"
+                        class="btn btn-primary btn-full-width" style="margin-top: 1rem;">
+                        ✨ Usar credenciales
+                    </button>
+                </div>
+            </div>
+        </section>
     </div>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="modern-footer">
+        <div class="footer-bottom">
+            <p>&copy; 2025 Tienda Online - Desarrollado con Spring Boot</p>
+        </div>
+    </footer>
 
     <script>
         // Función para rellenar credenciales de prueba

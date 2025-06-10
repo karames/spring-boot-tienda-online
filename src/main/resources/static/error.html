@@ -31,29 +31,30 @@
             </div>
         </div>
     </nav>
-
     <div class="welcome-container">
-        <header class="welcome-header">
+        <header class="simple-header">
             <h1>⚠️ Error de Acceso</h1>
             <p>Ha ocurrido un problema con tu solicitud</p>
         </header>
-    </div>
 
-    <div class="error-container">
-        <h2 class="error-title">⚠️ Sin Autorización</h2>
-        <div class="error-message">
-            <p>No tienes permiso para acceder a esta página o al recurso solicitado.</p>
-            <p>Esto puede deberse a alguna de las siguientes razones:</p>
-            <ul style="text-align: left;">
-                <li>No has iniciado sesión</li>
-                <li>Tu sesión ha expirado</li>
-                <li>No tienes los permisos necesarios</li>
-            </ul>
+        <div class="error-container-simple">
+            <div class="error-content-simple">
+                <h2 class="error-title-simple">⚠️ Sin Autorización</h2>
+                <div class="error-message-simple">
+                    <p>No tienes permiso para acceder a esta página o al recurso solicitado.</p>
+                    <p>Esto puede deberse a alguna de las siguientes razones:</p>
+                    <ul>
+                        <li>No has iniciado sesión</li>
+                        <li>Tu sesión ha expirado</li>
+                        <li>No tienes los permisos necesarios</li>
+                    </ul>
+                </div>
+                <div class="error-actions-simple">
+                    <a href="/" class="btn-simple primary">🏠 Ir a la página principal</a>
+                    <a href="login.html" class="btn-simple secondary">🔐 Iniciar sesión</a>
+                </div>
+            </div>
         </div>
-        <p>
-            <a href="/" class="back-button">🏠 Ir a la página principal</a>
-            <a href="login.html" class="back-button">🔐 Iniciar sesión</a>
-        </p>
     </div>
 
     <script src="js/auth.js"></script>

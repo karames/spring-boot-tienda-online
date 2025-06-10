@@ -5,101 +5,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Debug Login - Tienda Online</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .debug-section {
-            margin: 20px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 5px;
-            border-left: 4px solid #007bff;
-        }
-
-        input,
-        button {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-
-        button {
-            background: #007bff;
-            color: white;
-            cursor: pointer;
-            border: none;
-        }
-
-        button:hover {
-            background: #0056b3;
-        }
-
-        .error {
-            color: #dc3545;
-            margin: 10px 0;
-        }
-
-        .success {
-            color: #28a745;
-            margin: 10px 0;
-        }
-
-        .info {
-            color: #17a2b8;
-            margin: 5px 0;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 
 <body>
-    <div class="container">
+    <div class="diagnostico-container-simple">
         <h1>🔧 Debug Login</h1>
 
-        <div class="debug-section">
+        <div class="diagnostico-section-simple">
             <h3>Estado Actual del LocalStorage:</h3>
             <div id="localStorage-status"></div>
         </div>
 
-        <form id="debug-login-form">
-            <h3>Login de Prueba</h3>
-            <input type="text" id="username" placeholder="Usuario" required>
-            <input type="password" id="password" placeholder="Contraseña" required>
-            <button type="submit">🔐 Hacer Login DEBUG</button>
-        </form>
+        <div class="diagnostico-section-simple">
+            <form id="debug-login-form">
+                <h3>Login de Prueba</h3>
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Usuario" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Contraseña" required>
+                </div>
+                <button type="submit" class="btn-simple primary">🔐 Hacer Login DEBUG</button>
+            </form>
+        </div>
 
-        <div id="debug-messages"></div>
+        <div id="debug-messages" class="result-container-simple" style="display:none;">
+            <h3>Mensajes de Debug</h3>
+            <div id="debug-content"></div>
+        </div>
 
-        <div class="debug-section">
+        <div class="diagnostico-section-simple">
             <h3>Acciones de Debug:</h3>
-            <button onclick="clearLocalStorage()">🗑️ Limpiar LocalStorage</button>
-            <button onclick="checkLocalStorage()">🔍 Verificar LocalStorage</button>
-            <button onclick="testRedirect()">🔄 Test Redirección</button>
+            <div class="action-group-simple">
+                <button onclick="clearLocalStorage()" class="btn-simple danger">🗑️ Limpiar LocalStorage</button>
+                <button onclick="checkLocalStorage()" class="btn-simple secondary">🔍 Verificar LocalStorage</button>
+                <button onclick="testRedirect()" class="btn-simple success">🔄 Test Redirección</button>
+            </div>
         </div>
     </div>
 
     <script>
         function addMessage(msg, type = 'info') {
-            const div = document.getElementById('debug-messages');
+            const container = document.getElementById('debug-messages');
+            const content = document.getElementById('debug-content');
+
+            container.style.display = 'block';
+
             const p = document.createElement('p');
-            p.className = type;
+            p.className = `alert-simple ${type}`;
             p.innerHTML = `[${new Date().toLocaleTimeString()}] ${msg}`;
-            div.appendChild(p);
+            content.appendChild(p);
         }
 
         function clearLocalStorage() {
@@ -115,9 +72,14 @@
 
             const status = document.getElementById('localStorage-status');
             status.innerHTML = `
-                <div class="info">JWT: ${jwt ? '✅ Presente (' + jwt.substring(0, 20) + '...)' : '❌ No encontrado'}</div>
-                <div class="info">Role: ${role || '❌ No encontrado'}</div>
-                <div class="info">Username: ${username || '❌ No encontrado'}</div>
+                <div class="info-card-simple">
+                    <div class="card-title">Estado del LocalStorage</div>
+                    <div class="card-content">
+                        <p><strong>JWT:</strong> ${jwt ? '✅ Presente (' + jwt.substring(0, 20) + '...)' : '❌ No encontrado'}</p>
+                        <p><strong>Role:</strong> ${role || '❌ No encontrado'}</p>
+                        <p><strong>Username:</strong> ${username || '❌ No encontrado'}</p>
+                    </div>
+                </div>
             `;
         }
 

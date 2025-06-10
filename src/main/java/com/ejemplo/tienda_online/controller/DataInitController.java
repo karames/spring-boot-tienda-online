@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,37 +25,35 @@ public class DataInitController {
         // Verificar si ya hay productos
         if (productoRepository.count() > 0) {
             return ResponseEntity.ok("Ya existen productos en la base de datos");
-        }
-
-        List<Producto> productos = Arrays.asList(
+        }        List<Producto> productos = Arrays.asList(
             Producto.builder()
                 .nombre("Laptop Gaming")
                 .descripcion("Laptop para gaming de alta gama con procesador Intel i7")
-                .precio(1299.99)
+                .precio(BigDecimal.valueOf(1299.99))
                 .stock(10)
                 .build(),
             Producto.builder()
                 .nombre("Mouse Inalámbrico")
                 .descripcion("Mouse inalámbrico ergonómico con sensor óptico")
-                .precio(29.99)
+                .precio(BigDecimal.valueOf(29.99))
                 .stock(50)
                 .build(),
             Producto.builder()
                 .nombre("Teclado Mecánico")
                 .descripcion("Teclado mecánico con retroiluminación RGB")
-                .precio(89.99)
+                .precio(BigDecimal.valueOf(89.99))
                 .stock(25)
                 .build(),
             Producto.builder()
                 .nombre("Monitor 4K")
                 .descripcion("Monitor 4K de 27 pulgadas con tecnología IPS")
-                .precio(399.99)
+                .precio(BigDecimal.valueOf(399.99))
                 .stock(15)
                 .build(),
             Producto.builder()
                 .nombre("Auriculares Gaming")
                 .descripcion("Auriculares gaming con sonido surround 7.1")
-                .precio(159.99)
+                .precio(BigDecimal.valueOf(159.99))
                 .stock(30)
                 .build()
         );

@@ -30,66 +30,85 @@
             </div>
         </div>
     </nav>
-
-    <div class="auth-container">
-        <div class="auth-card">
-            <header class="auth-header">
-                <h1>📝 Crear Cuenta</h1>
-                <p>Únete a nuestra tienda online y comienza a comprar</p>
-            </header>
-
-            <form id="register-form" class="auth-form">
-                <div class="form-group">
-                    <label for="username">Nombre de Usuario</label>
-                    <div class="input-with-icon">
-                        <span class="input-icon">👤</span>
-                        <input type="text" id="username" placeholder="Elige un nombre de usuario único" required
-                            autocomplete="username">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Correo Electrónico</label>
-                    <div class="input-with-icon">
-                        <span class="input-icon">📧</span>
-                        <input type="email" id="email" placeholder="tu@email.com" required autocomplete="email">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Contraseña</label>
-                    <div class="input-with-icon">
-                        <span class="input-icon">🔒</span>
-                        <input type="password" id="password" placeholder="Crea una contraseña segura" required
-                            autocomplete="new-password">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-full-width">
-                    🚀 Crear Cuenta
-                </button>
-            </form>
-
-            <div id="register-error" class="error-message" style="display:none"></div>
-            <div id="register-success" class="success-message" style="display:none"></div>
-
-            <div class="auth-footer">
-                <p>¿Ya tienes una cuenta? <a href="login.html" class="link">🔐 Inicia sesión aquí</a></p>
-                <p><a href="/" class="link">🏠 Volver al inicio</a></p>
+    <div class="welcome-container">
+        <!-- SECCIÓN: CREAR CUENTA (fuera del cuadro principal) -->
+        <div class="register-standalone-form">
+            <div class="section-header">
+                <h2>📝 Crear Cuenta</h2>
+                <p class="section-description">Únete a nuestra tienda online y comienza a comprar</p>
             </div>
-
-            <div class="demo-credentials">
-                <h3>ℹ️ Información</h3>
-                <div
-                    style="text-align: center; padding: 1em; background: white; border-radius: 8px; border: 1px solid #dee2e6;">
-                    <p style="margin: 0; color: #666; font-size: 0.9em;">
-                        Después del registro serás redirigido al inicio.<br>
-                        Puedes usar el login para acceder con tu nueva cuenta.
-                    </p>
+            <div class="auth-card" style="box-shadow:none;background:none;padding-top:0;max-width:500px;width:100%;">
+                <form id="register-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="username">Usuario</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="username" placeholder="Elige un nombre de usuario" required
+                                autocomplete="username">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Correo electrónico</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">📧</span>
+                            <input type="email" id="email" placeholder="Tu correo electrónico" required
+                                autocomplete="email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" id="password" placeholder="Crea una contraseña" required
+                                autocomplete="new-password">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full-width">🚀 Crear Cuenta</button>
+                </form>
+                <div id="register-error" class="error-message" style="display:none"></div>
+                <div id="register-success" class="success-message" style="display:none"></div>
+                <div class="auth-footer" style="margin-top:0.3em;">
+                    <p>¿Ya tienes una cuenta? <a href="login.html" class="link">🔐 Inicia sesión aquí</a></p>
                 </div>
             </div>
         </div>
+
+        <!-- SEPARADOR VISUAL -->
+        <div class="section-divider" style="margin:1em 0 1.5em 0;"></div>
+
+        <!-- SECCIÓN: INFORMACIÓN POST-REGISTRO -->
+        <section class="welcome-section register-info-section section-box" style="margin-top:1em;">
+            <div class="section-header">
+                <h2>ℹ️ Información Importante</h2>
+                <p class="section-description">Todo lo que necesitas saber sobre tu nueva cuenta</p>
+            </div>
+            <div class="users-grid-responsive">
+                <div class="feature-card-simple success-card" style="align-items:center;">
+                    <div class="feature-icon" style="text-align:center;width:100%;">✅</div>
+                    <h3 style="text-align:center;width:100%;">Después del Registro</h3>
+                    <ul style="text-align:left;width:100%;margin-left:0;">
+                        <li>Serás redirigido automáticamente al inicio</li>
+                        <li>Puedes usar el formulario de login para acceder</li>
+                        <li>Tu cuenta tendrá permisos de cliente por defecto</li>
+                        <li>Podrás ver productos, añadir al carrito y hacer pedidos</li>
+                    </ul>
+                </div>
+                <div class="feature-card-simple warning-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Cuenta de Administrador</h3>
+                    <p>Para obtener permisos de administrador, contacta con el administrador del sistema o usa las
+                        credenciales de prueba en la página de login.</p>
+                </div>
+            </div>
+        </section>
     </div>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="modern-footer">
+        <div class="footer-bottom">
+            <p>&copy; 2025 Tienda Online - Desarrollado con Spring Boot</p>
+        </div>
+    </footer>
 
     <script>
         document.getElementById('register-form').addEventListener('submit', async function (e) {
