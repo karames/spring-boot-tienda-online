@@ -104,7 +104,28 @@ function mostrarProductos() {
 
     // Aplicar grid de 3 columnas
     div.className = 'productos-grid-cards';
-    div.innerHTML = productos.map(p => `
+
+    // Ordenar productos por nombre
+    let productosOrdenados = productos.slice().sort((a, b) => {
+        if (!a.nombre && !b.nombre) return 0;
+        if (!a.nombre) return 1;
+        if (!b.nombre) return -1;
+        return a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' });
+    });
+
+    // Botón para agregar productos (solo admin)
+    let botonAgregar = '';
+    if (role === 'ADMIN') {
+        botonAgregar = `<div class="producto-card" style="display:flex;align-items:center;justify-content:center;min-height:220px;">
+            <button class="btn btn-primary" style="width:100%;height:100%;font-size:1.25em;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5em;padding:2em 0;" onclick="mostrarFormularioAdmin()">
+                <span style='font-size:2em;'>➕</span>
+                Agregar Producto
+            </button>
+        </div>`;
+    }
+
+    // Mostrar siempre tarjetas, tanto para admin como para cliente
+    div.innerHTML = botonAgregar + productosOrdenados.map(p => `
         <div class="producto-card">
             <div class="producto-header" style="flex-direction:column;align-items:flex-start;">
                 <h3 style="text-align:left;width:100%;margin-bottom:0.2em;">${p.nombre}</h3>
@@ -114,27 +135,20 @@ function mostrarProductos() {
             </div>
             <div class="producto-descripcion">${p.descripcion || 'Sin descripción'}</div>
             <div class="producto-precio" style="text-align:center;width:100%;">${p.precioFormateado ? p.precioFormateado : formatearPrecio(p.precio)} €</div>
-
-            ${role === 'CLIENTE' && p.stock > 0 ? `
-                <div class="producto-acciones">
+            <div class="producto-acciones">
+                <button onclick="editarProducto('${p.id}')" class="btn btn-editar-producto" title="Editar ${p.nombre}">✏️</button>
+                <button onclick="eliminarProducto('${p.id}')" class="btn btn-eliminar-producto" title="Eliminar ${p.nombre}">🗑️</button>
+                ${role === 'CLIENTE' && p.stock > 0 ? `
                     <button onclick="agregarAlCarrito('${p.id}')" class="btn btn-primary" title="Agregar ${p.nombre} al Carrito" style="width:100%;display:block;">
                         Agregar al Carrito
                     </button>
-                </div>
-            ` : ''}
-
-            ${role === 'ADMIN' ? `
-                <div class="producto-acciones">
-                    <button onclick="editarProducto('${p.id}')" class="btn btn-secondary" title="Editar ${p.nombre}">
-                        Editar
-                    </button>
-                    <button onclick="eliminarProducto('${p.id}')" class="btn btn-danger" title="Eliminar ${p.nombre}">
-                        Eliminar
-                    </button>
-                </div>
-            ` : ''}
+                ` : ''}
+            </div>
         </div>
     `).join('');
+    // No mostrar el formulario de alta
+    const formContainer = document.querySelector('.admin-form-container');
+    if (formContainer) formContainer.style.display = 'none';
 }
 
 // Inicializar carrito desde localStorage
@@ -282,31 +296,36 @@ async function realizarPedido() {
     }
 }
 
-function mostrarFormularioAdmin() {
+function mostrarFormularioAdmin(producto = null) {
     const container = document.querySelector('.productos-grid') || document.getElementById('productos-list');
+    // Eliminar cualquier formulario previo
+    const formPrevio = document.querySelector('.admin-form-container');
+    if (formPrevio) formPrevio.remove();
+
+    const isEdit = !!producto;
     const formHTML = `
         <div class="admin-form-container">
-            <h3>Agregar Nuevo Producto</h3>
+            <h3>${isEdit ? 'Editar Producto' : 'Agregar Nuevo Producto'}</h3>
             <form id="form-producto" class="producto-form">
-                <input type="hidden" id="producto-id" value="">
+                <input type="hidden" id="producto-id" value="${isEdit ? producto.id : ''}">
                 <div class="form-group">
                     <label for="producto-nombre">Nombre:</label>
-                    <input type="text" id="producto-nombre" required>
+                    <input type="text" id="producto-nombre" required value="${isEdit ? producto.nombre : ''}">
                 </div>
                 <div class="form-group">
                     <label for="producto-descripcion">Descripción:</label>
-                    <textarea id="producto-descripcion"></textarea>
+                    <textarea id="producto-descripcion">${isEdit ? (producto.descripcion || '') : ''}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="producto-precio">Precio:</label>
-                    <input type="number" id="producto-precio" step="0.01" min="0" required>
+                    <input type="number" id="producto-precio" step="0.01" min="0" required value="${isEdit ? producto.precio : ''}">
                 </div>
                 <div class="form-group">
                     <label for="producto-stock">Stock:</label>
-                    <input type="number" id="producto-stock" min="0" required>
+                    <input type="number" id="producto-stock" min="0" required value="${isEdit ? producto.stock : ''}">
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Guardar Producto</button>
+                    <button type="submit" class="btn btn-primary">${isEdit ? 'Guardar Cambios' : 'Guardar Producto'}</button>
                     <button type="button" onclick="cancelarEdicion()" class="btn btn-secondary">Cancelar</button>
                 </div>
             </form>
@@ -361,20 +380,13 @@ async function guardarProducto() {
 function editarProducto(id) {
     const producto = productos.find(p => p.id === id);
     if (!producto) return;
-
-    document.getElementById('producto-id').value = id;
-    document.getElementById('producto-nombre').value = producto.nombre;
-    document.getElementById('producto-descripcion').value = producto.descripcion || '';
-    document.getElementById('producto-precio').value = producto.precio;
-    document.getElementById('producto-stock').value = producto.stock;
-
-    document.querySelector('.admin-form-container h3').textContent = 'Editar Producto';
+    mostrarFormularioAdmin(producto);
 }
 
 function cancelarEdicion() {
-    document.getElementById('form-producto').reset();
-    document.getElementById('producto-id').value = '';
-    document.querySelector('.admin-form-container h3').textContent = 'Agregar Nuevo Producto';
+    // Elimina el formulario de agregar/editar producto si existe
+    const form = document.querySelector('.admin-form-container');
+    if (form) form.remove();
 }
 
 async function eliminarProducto(id) {

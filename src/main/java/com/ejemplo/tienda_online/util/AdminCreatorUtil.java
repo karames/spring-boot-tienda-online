@@ -34,7 +34,8 @@ public class AdminCreatorUtil implements CommandLineRunner {
             return;
         }
 
-        Scanner scanner = new Scanner(System.in);
+        // No cerramos el Scanner para evitar cerrar System.in y posibles problemas en la JVM.
+        final Scanner scanner = new Scanner(System.in); // warning aceptado: el proceso termina con System.exit(0)
         System.out.println("\n=== CREACIÓN DE USUARIO ADMINISTRADOR ===");
 
         System.out.print("Ingrese nombre de usuario: ");

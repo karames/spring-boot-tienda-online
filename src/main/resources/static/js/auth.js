@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const role = (data.role || '').toUpperCase();
                         console.log('[auth.js] Redirigiendo según rol:', role);
                         if (role === 'ADMIN') {
-                            window.location.replace('admin.html');
+                            window.location.replace('pedidos.html'); // Redirigir a pedidos.html para admin
                         } else if (role === 'CLIENTE') {
                             window.location.replace('productos.html');
                         } else {

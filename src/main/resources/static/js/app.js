@@ -210,20 +210,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (docsLink) docsLink.style.display = '';
     }
     // --- FIN CONTROL DE ENLACES ---
-    // Reordenar y resaltar enlaces para CLIENTE
-    if (role && role.toUpperCase() === 'CLIENTE' && productosLink && pedidosLink) {
-        const navCenter = productosLink.parentElement;
-        if (navCenter && navCenter.contains(productosLink) && navCenter.contains(pedidosLink)) {
-            navCenter.insertBefore(productosLink, pedidosLink);
-        }
-        // Resaltar el enlace activo según la página
+    // Resaltar el enlace activo según la página para ADMIN
+    if (role && role.toUpperCase() === 'ADMIN' && pedidosLink && productosLink && adminLink) {
         const path = window.location.pathname;
-        productosLink.classList.remove('active');
         pedidosLink.classList.remove('active');
-        if (path.endsWith('productos.html')) {
-            productosLink.classList.add('active');
-        } else if (path.endsWith('pedidos.html')) {
+        productosLink.classList.remove('active');
+        adminLink.classList.remove('active');
+        if (path.endsWith('pedidos.html')) {
             pedidosLink.classList.add('active');
+        } else if (path.endsWith('productos.html')) {
+            productosLink.classList.add('active');
+        } else if (path.endsWith('admin.html')) {
+            adminLink.classList.add('active');
         }
     }
     // Resaltar el enlace activo del carrito si corresponde
