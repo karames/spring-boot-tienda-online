@@ -1,5 +1,6 @@
 package com.ejemplo.tienda_online.service;
 
+import com.ejemplo.tienda_online.dto.PedidoResponse;
 import com.ejemplo.tienda_online.exception.BusinessException;
 import com.ejemplo.tienda_online.exception.ResourceNotFoundException;
 import com.ejemplo.tienda_online.model.Pedido;
@@ -15,7 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -38,7 +38,6 @@ public class PedidoService {
     // Constantes para validación de negocio
     private static final int MAX_CANTIDAD_POR_ITEM = 100;
     private static final int MAX_ITEMS_POR_PEDIDO = 50;
-    private static final BigDecimal MAX_TOTAL_PEDIDO = BigDecimal.valueOf(100000.00);
 
     /**
      * Obtiene todos los pedidos del sistema.
@@ -84,16 +83,16 @@ public class PedidoService {
 
         pedido.setId(null); // Deja que MongoDB genere el ID
 
-        // Validar stock y calcular total
-        BigDecimal total = validarStockYCalcularTotal(pedido);
+        // Validar stock y calcular total (solo para validación, no guardar el total)
+        validarStockYCalcularTotal(pedido);
 
         // Asignar usuario actual
         Usuario usuario = obtenerUsuarioActual();
         pedido.setUsuarioId(usuario.getId());
 
         // Establecer metadatos del pedido
-        pedido.setFecha(Instant.now());        pedido.setEstado(Pedido.EstadoPedido.PENDIENTE);
-        pedido.setTotal(total);
+        pedido.setFecha(Instant.now());
+        pedido.setEstado(Pedido.EstadoPedido.PENDIENTE);
 
         // Guardar el pedido
         Pedido pedidoGuardado = pedidoRepository.save(pedido);
@@ -102,8 +101,7 @@ public class PedidoService {
         // Actualizar stock de productos
         actualizarStockProductos(pedido);
 
-        log.info("Pedido {} procesado completamente. Total: ${}",
-                 pedidoGuardado.getId(), total);
+        log.info("Pedido {} procesado completamente.", pedidoGuardado.getId());
 
         return pedidoGuardado;
     }
@@ -194,6 +192,78 @@ public class PedidoService {
         return pedidoCancelado;
     }
 
+    /**
+     * Obtiene todos los pedidos del sistema con información del usuario.
+     *
+     * @return Lista de pedidos con información de usuario
+     */
+    public List<PedidoResponse> getAllWithUserInfo() {
+        log.info("Obteniendo todos los pedidos del sistema (con info de usuario)");
+        List<Pedido> pedidos = pedidoRepository.findAll();
+        return pedidos.stream().map(pedido -> {
+            Usuario usuario = usuarioRepository.findById(pedido.getUsuarioId()).orElse(null);
+            return PedidoResponse.builder()
+                .id(pedido.getId())
+                .usuarioId(pedido.getUsuarioId())
+                .nombreUsuario(usuario != null ? usuario.getUsername() : "-")
+                .emailUsuario(usuario != null ? usuario.getEmail() : "-")
+                .productos(pedido.getProductos().stream().map(item -> PedidoResponse.ItemPedidoResponse.builder()
+                    .productoId(item.getProductoId())
+                    .nombreProducto(item.getNombreProducto())
+                    .cantidad(item.getCantidad())
+                    .precioUnitario(item.getPrecioUnitario())
+                    .subtotal(item.getPrecioUnitario() != null && item.getCantidad() != null ? item.getPrecioUnitario() * item.getCantidad() : 0.0)
+                    // No es necesario calcular aquí el formateado, lo hace el DTO
+                    .build()).collect(java.util.stream.Collectors.toList()))
+                .fecha(pedido.getFecha())
+                .estado(pedido.getEstado().name())
+                .estadoDescripcion(pedido.getEstado().toString())
+                .fechaActualizacion(pedido.getFechaActualizacion())
+                .direccionEnvio(pedido.getDireccionEnvio())
+                .notas(pedido.getNotas())
+                .numeroSeguimiento(pedido.getNumeroSeguimiento())
+                .fechaEstimadaEntrega(pedido.getFechaEstimadaEntrega())
+                .fechaEntrega(pedido.getFechaEntrega())
+                .motivoCancelacion(pedido.getMotivoCancelacion())
+                .build();
+        }).collect(java.util.stream.Collectors.toList());
+    }
+
+    /**
+     * Obtiene los pedidos del usuario autenticado actualmente como PedidoResponse,
+     * con precios formateados.
+     *
+     * @return Lista de pedidos del usuario actual con información formateada
+     */
+    public List<PedidoResponse> getPedidosUsuarioActualConFormato() {
+        Usuario usuario = obtenerUsuarioActual();
+        List<Pedido> pedidos = pedidoRepository.findByUsuarioId(usuario.getId());
+        return pedidos.stream().map(pedido -> PedidoResponse.builder()
+            .id(pedido.getId())
+            .usuarioId(pedido.getUsuarioId())
+            .nombreUsuario(usuario.getUsername())
+            .emailUsuario(usuario.getEmail())
+            .productos(pedido.getProductos().stream().map(item -> PedidoResponse.ItemPedidoResponse.builder()
+                .productoId(item.getProductoId())
+                .nombreProducto(item.getNombreProducto())
+                .cantidad(item.getCantidad())
+                .precioUnitario(item.getPrecioUnitario())
+                .subtotal(item.getPrecioUnitario() != null && item.getCantidad() != null ? item.getPrecioUnitario() * item.getCantidad() : 0.0)
+                .build()).collect(java.util.stream.Collectors.toList()))
+            .fecha(pedido.getFecha())
+            .estado(pedido.getEstado().name())
+            .estadoDescripcion(pedido.getEstado().toString())
+            .fechaActualizacion(pedido.getFechaActualizacion())
+            .direccionEnvio(pedido.getDireccionEnvio())
+            .notas(pedido.getNotas())
+            .numeroSeguimiento(pedido.getNumeroSeguimiento())
+            .fechaEstimadaEntrega(pedido.getFechaEstimadaEntrega())
+            .fechaEntrega(pedido.getFechaEntrega())
+            .motivoCancelacion(pedido.getMotivoCancelacion())
+            .build()
+        ).collect(java.util.stream.Collectors.toList());
+    }
+
     // MÉTODOS PRIVADOS DE APOYO
 
     /**
@@ -255,9 +325,7 @@ public class PedidoService {
     /**
      * Valida el stock disponible y calcula el total del pedido.
      */
-    private BigDecimal validarStockYCalcularTotal(Pedido pedido) {
-        BigDecimal total = BigDecimal.ZERO;
-
+    private void validarStockYCalcularTotal(Pedido pedido) {
         for (Pedido.ItemPedido item : pedido.getProductos()) {
             Producto producto = productoRepository.findById(item.getProductoId())
                     .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado: " + item.getProductoId()));
@@ -268,20 +336,11 @@ public class PedidoService {
                     String.format("Stock insuficiente para el producto '%s'. Disponible: %d, solicitado: %d",
                         producto.getNombre(), producto.getStock(), item.getCantidad()));
             }
-              // Establecer precio unitario y calcular subtotal
-            BigDecimal precioUnitario = producto.getPrecio();
-            BigDecimal subtotal = precioUnitario.multiply(BigDecimal.valueOf(item.getCantidad()));
-
-            item.setPrecioUnitario(producto.getPrecio());
-            total = total.add(subtotal);
+            // Establecer precio unitario y nombre del producto al momento de la compra
+            Double precioUnitario = producto.getPrecio();
+            item.setPrecioUnitario(precioUnitario);
+            item.setNombreProducto(producto.getNombre());
         }
-
-        // Validar total máximo
-        if (total.compareTo(MAX_TOTAL_PEDIDO) > 0) {
-            throw new BusinessException("El total del pedido no puede exceder $" + MAX_TOTAL_PEDIDO);
-        }
-
-        return total;
     }
 
     /**

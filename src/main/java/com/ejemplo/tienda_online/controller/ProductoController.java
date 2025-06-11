@@ -1,5 +1,6 @@
 package com.ejemplo.tienda_online.controller;
 
+import com.ejemplo.tienda_online.dto.ProductoResponse;
 import com.ejemplo.tienda_online.model.Producto;
 import com.ejemplo.tienda_online.service.ProductoService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controlador REST para la gestión de productos.
@@ -32,11 +34,26 @@ public class ProductoController {
      * @return Lista de todos los productos
      */
     @GetMapping
-    public ResponseEntity<List<Producto>> getAll() {
+    public ResponseEntity<List<ProductoResponse>> getAll() {
         log.info("Solicitando lista de todos los productos");
         List<Producto> productos = productoService.getAll();
         log.info("Devolviendo {} productos", productos.size());
-        return ResponseEntity.ok(productos);
+        // Convertir a ProductoResponse y devolver precio formateado
+        List<ProductoResponse> response = productos.stream()
+            .map(p -> ProductoResponse.builder()
+                .id(p.getId())
+                .nombre(p.getNombre())
+                .descripcion(p.getDescripcion())
+                .precio(java.math.BigDecimal.valueOf(p.getPrecio()))
+                .stock(p.getStock())
+                .categoria(p.getCategoria())
+                .imagenUrl(p.getImagenUrl())
+                .fechaCreacion(p.getFechaCreacion())
+                .fechaActualizacion(p.getFechaActualizacion())
+                .disponible(p.estaDisponible())
+                .build())
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 
     /**

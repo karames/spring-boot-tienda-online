@@ -48,17 +48,7 @@ public class ProductoRequest {
     private String categoria;
 
     /**
-     * Peso del producto en gramos.
-     */
-    private Integer pesoGramos;
-
-    /**
      * URL de la imagen del producto.
      */
     private String imagenUrl;
-
-    /**
-     * Estado activo del producto.
-     */
-    private Boolean activo;
 }

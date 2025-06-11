@@ -1,5 +1,6 @@
 package com.ejemplo.tienda_online.controller;
 
+import com.ejemplo.tienda_online.dto.PedidoResponse;
 import com.ejemplo.tienda_online.model.Pedido;
 import com.ejemplo.tienda_online.service.PedidoService;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +35,9 @@ public class PedidoController {
      */
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Pedido>> getAll() {
+    public ResponseEntity<List<PedidoResponse>> getAll() {
         log.info("Administrador solicitando todos los pedidos");
-        List<Pedido> pedidos = pedidoService.getAll();
+        List<PedidoResponse> pedidos = pedidoService.getAllWithUserInfo();
         log.info("Devolviendo {} pedidos al administrador", pedidos.size());
         return ResponseEntity.ok(pedidos);
     }
@@ -49,9 +50,9 @@ public class PedidoController {
      */
     @GetMapping("/mios")
     @PreAuthorize("hasRole('CLIENTE')")
-    public ResponseEntity<List<Pedido>> getMisPedidos() {
+    public ResponseEntity<List<PedidoResponse>> getMisPedidos() {
         log.info("Cliente solicitando sus pedidos");
-        List<Pedido> pedidos = pedidoService.getPedidosUsuarioActual();
+        List<PedidoResponse> pedidos = pedidoService.getPedidosUsuarioActualConFormato();
         log.info("Cliente tiene {} pedidos", pedidos.size());
         return ResponseEntity.ok(pedidos);
     }
@@ -85,8 +86,7 @@ public class PedidoController {
 
         Pedido pedidoCreado = pedidoService.crearPedido(pedido);
 
-        log.info("Pedido creado exitosamente con ID: {} por un total de ${}",
-                 pedidoCreado.getId(), pedidoCreado.getTotal());
+        log.info("Pedido creado exitosamente con ID: {}", pedidoCreado.getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoCreado);
     }

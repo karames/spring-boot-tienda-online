@@ -54,19 +54,9 @@ public class ProductoResponse {
     private String categoria;
 
     /**
-     * Peso del producto en gramos.
-     */
-    private Integer pesoGramos;
-
-    /**
      * URL de la imagen del producto.
      */
     private String imagenUrl;
-
-    /**
-     * Indica si el producto está activo.
-     */
-    private Boolean activo;
 
     /**
      * Fecha de creación del producto.
@@ -82,4 +72,17 @@ public class ProductoResponse {
      * Indica si el producto está disponible para la venta.
      */
     private Boolean disponible;
+
+    /**
+     * Devuelve el precio formateado en formato español (punto para miles, coma para decimales)
+     */
+    public String getPrecioFormateado() {
+        if (precio == null) return "0,00";
+        java.text.DecimalFormat df = new java.text.DecimalFormat("###,##0.00");
+        java.text.DecimalFormatSymbols symbols = new java.text.DecimalFormatSymbols();
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator('.');
+        df.setDecimalFormatSymbols(symbols);
+        return df.format(precio);
+    }
 }

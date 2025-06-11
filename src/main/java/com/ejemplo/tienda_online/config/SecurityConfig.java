@@ -66,7 +66,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/pedidos/**").hasRole("ADMIN") // Cambiar estado
                 // Páginas web
                 .requestMatchers("/admin.html", "/admin_db.html").hasRole("ADMIN")
-                .requestMatchers("/productos.html", "/pedidos.html").permitAll()
+                .requestMatchers("/productos.html", "/pedidos.html", "/carrito.html").permitAll()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(eh -> eh

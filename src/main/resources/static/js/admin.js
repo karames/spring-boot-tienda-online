@@ -13,7 +13,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const role = localStorage.getItem('role');
     console.log('[ADMIN] JWT presente:', !!jwt, '| Role:', role);
 
-    if (!jwt || !role) {
+    // Validación estricta de rol ADMIN
+    if (!jwt || !role || role.toUpperCase() !== 'ADMIN') {
         localStorage.clear();
         window.location.replace('login.html');
         return;
@@ -31,7 +32,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Navegación entre secciones
 function initAdminNavigation() {
-    const tabs = document.querySelectorAll('.admin-tab');
+    // Usar la clase correcta para los tabs
+    const tabs = document.querySelectorAll('.admin-tab-simple');
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             const section = tab.getAttribute('data-section');
@@ -42,13 +44,13 @@ function initAdminNavigation() {
 
 function switchSection(sectionName) {
     // Actualizar tabs activos
-    document.querySelectorAll('.admin-tab').forEach(tab => {
+    document.querySelectorAll('.admin-tab-simple').forEach(tab => {
         tab.classList.remove('active');
     });
     document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
 
     // Mostrar/ocultar secciones
-    document.querySelectorAll('.admin-section').forEach(section => {
+    document.querySelectorAll('.admin-section-simple').forEach(section => {
         section.style.display = 'none';
     });
     document.getElementById(`${sectionName}-section`).style.display = 'block';
@@ -65,6 +67,9 @@ function switchSection(sectionName) {
             break;
         case 'usuarios':
             loadUsuarios();
+            break;
+        case 'productos':
+            // Si tienes función para productos, agrégala aquí
             break;
     }
 }
@@ -95,12 +100,33 @@ async function loadDashboard() {
         // Simular usuarios (no hay endpoint específico)
         document.getElementById('total-usuarios').textContent = '2+';
 
+        // Mostrar información relevante de la base de datos
+        mostrarInfoBaseDeDatos(productos, pedidos);
+
         showNotification('Dashboard actualizado correctamente', 'success');
 
     } catch (error) {
         console.error('Error cargando dashboard:', error);
         showNotification('Error al cargar el dashboard', 'error');
     }
+}
+
+function mostrarInfoBaseDeDatos(productos, pedidos) {
+    const dbInfoList = document.getElementById('db-info-list');
+    if (!dbInfoList) return;
+    // Ejemplo de información relevante
+    const totalStock = productos.reduce((sum, p) => sum + (p.stock || 0), 0);
+    const productosSinStock = productos.filter(p => (p.stock || 0) === 0).length;
+    const pedidosEnviados = pedidos.filter(p => p.estado === 'ENVIADO').length;
+    const productosUnicosPedidos = new Set(pedidos.flatMap(p => p.productos.map(i => i.productoId))).size;
+    dbInfoList.innerHTML = `
+        <li>🗃️ <strong>Productos distintos en pedidos:</strong> ${productosUnicosPedidos}</li>
+        <li>📦 <strong>Stock total disponible:</strong> ${totalStock}</li>
+        <li>❌ <strong>Productos sin stock:</strong> ${productosSinStock}</li>
+        <li>🚚 <strong>Pedidos enviados:</strong> ${pedidosEnviados}</li>
+        <li>⏳ <strong>Pedidos pendientes:</strong> ${pedidos.filter(p => p.estado === 'PENDIENTE').length}</li>
+        <li>🕒 <strong>Último pedido creado:</strong> ${pedidos.length > 0 ? new Date(Math.max(...pedidos.map(p => new Date(p.fecha)))).toLocaleString('es-ES') : 'N/A'}</li>
+    `;
 }
 
 // Gestión de pedidos

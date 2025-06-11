@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Carrito de Compras</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="nav-center">
+            <a href="productos.html" id="productos-link">📦 Productos</a>
+            <a href="pedidos.html" id="pedidos-link">📋 Mis pedidos</a>
+            <a href="carrito.html" id="carrito-link" class="active" style="display:none;">🛒 Carrito</a>
+        </div>
+        <div id="user-menu" class="user-menu" style="display:none;"></div>
+    </nav>
+    <div class="welcome-container">
+        <header class="simple-header" style="text-align: center;">
+            <h1>🛒 Carrito de Compras</h1>
+            <p style="text-align: center;">Revisa y gestiona los productos de tu carrito</p>
+        </header>
+        <div class="container">
+            <div id="message-container" class="message-container" style="display:none;"></div>
+            <div id="carrito-list" class="carrito-list"></div>
+        </div>
+    </div>
+    <footer class="modern-footer">
+        <div class="footer-bottom">
+            <p>&copy; 2025 Tienda Online - Desarrollado con Spring Boot</p>
+        </div>
+    </footer>
+    <script src="js/app.js"></script>
+    <script src="js/productos.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Mostrar el carrito al cargar la página
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof mostrarCarritoPagina === 'function') mostrarCarritoPagina();
+        });
+    </script>
+</body>
+
+</html>

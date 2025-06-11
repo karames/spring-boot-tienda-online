@@ -136,54 +136,80 @@ function mostrarPedidos(pedidosAMostrar = pedidos) {
         return;
     }
 
+    // Ordenar los pedidos por fecha descendente (más recientes primero)
+    pedidosAMostrar = pedidosAMostrar.slice().sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
     div.innerHTML = pedidosAMostrar.map(pedido => {
         const fecha = new Date(pedido.fecha).toLocaleString('es-ES');
-        const productosHTML = pedido.productos.map(item => {
-            const producto = productos.find(p => p.id === item.productoId);
-            const nombreProducto = producto ? producto.nombre : `Producto ${item.productoId}`;
-            const precio = producto ? producto.precio : 0;
-            const subtotal = precio * item.cantidad;
-
+        const productosHTML = `
+            <table class="pedido-productos-tabla tabla-productos">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th style="text-align:center;">Cantidad</th>
+                        <th style="text-align:right;">Precio</th>
+                        <th style="text-align:right;">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${pedido.productos.map(item => {
+            const nombreProducto = item.nombreProducto || `Producto ${item.productoId}`;
+            const precio = item.precioUnitarioFormateado ? item.precioUnitarioFormateado : formatearPrecio(item.precioUnitario);
+            const subtotal = item.subtotalFormateado ? item.subtotalFormateado : formatearPrecio(item.subtotal);
             return `
-                <div class="pedido-item">
-                    <span class="item-nombre">${nombreProducto}</span>
-                    <span class="item-cantidad">Cantidad: ${item.cantidad}</span>
-                    <span class="item-precio">€${precio.toFixed(2)} c/u</span>
-                    <span class="item-subtotal">Subtotal: €${subtotal.toFixed(2)}</span>
-                </div>
+                <tr>
+                    <td>${nombreProducto}</td>
+                    <td style="text-align:center;">${item.cantidad}</td>
+                    <td style="text-align:right;">${precio} €</td>
+                    <td style="text-align:right;">${subtotal} €</td>
+                </tr>
             `;
-        }).join('');
+        }).join('')}
+                </tbody>
+            </table>`;
 
         const total = pedido.productos.reduce((sum, item) => {
-            const producto = productos.find(p => p.id === item.productoId);
-            return sum + (producto ? producto.precio * item.cantidad : 0);
+            let precio = 0;
+            if (item.precioUnitario !== undefined && item.precioUnitario !== null) {
+                precio = Number(item.precioUnitario);
+                if (isNaN(precio) && typeof item.precioUnitario === 'string') {
+                    precio = Number(item.precioUnitario.replace(',', '.'));
+                }
+            } else {
+                const producto = productos.find(p => p.id === item.productoId);
+                precio = producto ? Number(producto.precio) : 0;
+            }
+            return sum + (precio * item.cantidad);
         }, 0);
 
+        // Estado visual con color
+        const estadoBadge = `<span class="badge badge-${pedido.estado.toLowerCase()}">${pedido.estado === 'PENDIENTE' ? 'Pendiente' : pedido.estado === 'ENVIADO' ? 'Enviado' : pedido.estado}</span>`;
+
         return `
-            <div class="pedido ${pedido.estado.toLowerCase()}" id="pedido-${pedido.id}">
-                <div class="pedido-header">
+            <div class="pedido-card ${pedido.estado.toLowerCase()}" id="pedido-${pedido.id}">
+                <div class="pedido-header-card">
                     <div class="pedido-info">
                         <h3>Pedido #${pedido.id}</h3>
                         <span class="pedido-fecha">${fecha}</span>
                     </div>
                     <div class="pedido-estado">
-                        <span class="badge badge-${pedido.estado.toLowerCase()}">${pedido.estado}</span>
+                        ${estadoBadge}
                     </div>
                 </div>
 
                 ${role === 'ADMIN' ? `
                     <div class="pedido-usuario">
-                        <strong>Usuario:</strong> ${pedido.usuarioId}
+                        <strong>Usuario:</strong> ${pedido.nombreUsuario || ''} <span style="color:#888;font-size:0.95em;">(${pedido.emailUsuario || ''})</span>
                     </div>
                 ` : ''}
 
                 <div class="pedido-productos">
-                    <h4>Productos:</h4>
+                    <h4>Detalle del pedido</h4>
                     ${productosHTML}
                 </div>
 
                 <div class="pedido-total">
-                    <strong>Total: €${total.toFixed(2)}</strong>
+                    <strong>Total: ${pedido.totalFormateado ? pedido.totalFormateado : formatearPrecio(total)} €</strong>
                 </div>
 
                 ${role === 'ADMIN' && pedido.estado === 'PENDIENTE' ? `
@@ -196,6 +222,16 @@ function mostrarPedidos(pedidosAMostrar = pedidos) {
             </div>
         `;
     }).join('');
+}
+
+function formatearPrecio(precio) {
+    if (precio === undefined || precio === null) return '';
+    // Si ya es string (formateado por backend), devuélvelo tal cual
+    if (typeof precio === 'string') return precio;
+    // Si es número, formatea
+    const num = Number(precio);
+    if (isNaN(num)) return '';
+    return num.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 async function cambiarEstadoPedido(pedidoId, nuevoEstado) {

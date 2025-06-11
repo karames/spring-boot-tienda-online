@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 /**
@@ -42,10 +41,10 @@ public class Producto {
     private String descripcion;
 
     /**
-     * Precio del producto usando BigDecimal para precisión monetaria.
+     * Precio del producto usando Double para precisión monetaria.
      */
     @Builder.Default
-    private BigDecimal precio = BigDecimal.ZERO;
+    private Double precio = 0.0;
 
     /**
      * Cantidad disponible en stock.
@@ -57,12 +56,6 @@ public class Producto {
      * Categoría del producto para organización y filtrado.
      */
     private String categoria;
-
-    /**
-     * Indica si el producto está activo y disponible para la venta.
-     */
-    @Builder.Default
-    private Boolean activo = true;
 
     /**
      * Fecha de creación del producto en el sistema.
@@ -77,12 +70,6 @@ public class Producto {
     private Instant fechaActualizacion = Instant.now();
 
     /**
-     * Peso del producto en gramos para cálculo de envío.
-     */
-    @Builder.Default
-    private Integer pesoGramos = 0;
-
-    /**
      * URL de la imagen principal del producto.
      */
     private String imagenUrl;
@@ -93,7 +80,7 @@ public class Producto {
      * @return true si el producto está activo y tiene stock disponible
      */
     public boolean estaDisponible() {
-        return Boolean.TRUE.equals(activo) && stock != null && stock > 0;
+        return stock != null && stock > 0;
     }
 
     /**
@@ -141,43 +128,6 @@ public class Producto {
      * Actualiza la fecha de modificación del producto.
      */
     public void marcarComoActualizado() {
-        this.fechaActualizacion = Instant.now();
-    }
-
-    /**
-     * Activa el producto para que esté disponible para la venta.
-     */
-    public void activar() {
-        this.activo = true;
-        this.fechaActualizacion = Instant.now();
-    }
-
-    /**
-     * Desactiva el producto para que no esté disponible para la venta.
-     */
-    public void desactivar() {
-        this.activo = false;
-        this.fechaActualizacion = Instant.now();
-    }
-
-    /**
-     * Obtiene el precio como double para compatibilidad con código existente.
-     * @deprecated Usar getPrecio() que retorna BigDecimal
-     * @return precio como double
-     */
-    @Deprecated
-    public double getPrecioAsDouble() {
-        return precio != null ? precio.doubleValue() : 0.0;
-    }
-
-    /**
-     * Establece el precio desde un valor double.
-     * @deprecated Usar setPrecio(BigDecimal)
-     * @param precio precio como double
-     */
-    @Deprecated
-    public void setPrecioFromDouble(double precio) {
-        this.precio = BigDecimal.valueOf(precio);
         this.fechaActualizacion = Instant.now();
     }
 }

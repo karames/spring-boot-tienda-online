@@ -3,8 +3,6 @@ package com.ejemplo.tienda_online.model;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.ArrayList;
@@ -41,12 +39,6 @@ public class Pedido {
      */
     @Builder.Default
     private List<ItemPedido> productos = new ArrayList<>();
-
-    /**
-     * Total del pedido calculado usando BigDecimal para precisión monetaria.
-     */
-    @Builder.Default
-    private BigDecimal total = BigDecimal.ZERO;
 
     /**
      * Fecha de creación del pedido.
@@ -121,30 +113,20 @@ public class Pedido {
         private Integer cantidad;
 
         /**
-         * Precio unitario al momento de la compra usando BigDecimal.
+         * Precio unitario al momento de la compra usando Double.
          */
-        private BigDecimal precioUnitario;
+        private Double precioUnitario;
 
         /**
          * Calcula el subtotal de este item del pedido.
          *
          * @return subtotal del item (cantidad * precio unitario)
          */
-        public BigDecimal calcularSubtotal() {
+        public Double calcularSubtotal() {
             if (cantidad == null || precioUnitario == null) {
-                return BigDecimal.ZERO;
+                return 0.0;
             }
-            return precioUnitario.multiply(BigDecimal.valueOf(cantidad));
-        }
-
-        /**
-         * Obtiene el precio unitario como double para compatibilidad.
-         * @deprecated Usar getPrecioUnitario() que retorna BigDecimal
-         * @return precio unitario como double
-         */
-        @Deprecated
-        public double getPrecioUnitarioAsDouble() {
-            return precioUnitario != null ? precioUnitario.doubleValue() : 0.0;
+            return precioUnitario * cantidad;
         }
     }
 
@@ -204,43 +186,6 @@ public class Pedido {
         public boolean esFinal() {
             return this == ENTREGADO || this == CANCELADO;
         }
-    }
-
-    /**
-     * Calcula el total del pedido sumando todos los subtotales de los items.
-     *
-     * @return total calculado del pedido
-     */
-    public BigDecimal calcularTotal() {
-        if (productos == null || productos.isEmpty()) {
-            return BigDecimal.ZERO;
-        }
-
-        return productos.stream()
-                .map(ItemPedido::calcularSubtotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    /**
-     * Actualiza el total del pedido basado en los items actuales.
-     */
-    public void actualizarTotal() {
-        this.total = calcularTotal();
-        this.fechaActualizacion = Instant.now();
-    }
-
-    /**
-     * Obtiene la cantidad total de items en el pedido.
-     *
-     * @return número total de items
-     */
-    public int getCantidadTotalItems() {
-        if (productos == null) {
-            return 0;
-        }
-        return productos.stream()
-                .mapToInt(item -> item.getCantidad() != null ? item.getCantidad() : 0)
-                .sum();
     }
 
     /**
@@ -322,7 +267,6 @@ public class Pedido {
         }
 
         productos.add(item);
-        actualizarTotal();
     }
 
     /**
@@ -341,34 +285,7 @@ public class Pedido {
             return false;
         }
 
-        boolean removido = productos.removeIf(item ->
+        return productos.removeIf(item ->
             item.getProductoId() != null && item.getProductoId().equals(productoId));
-
-        if (removido) {
-            actualizarTotal();
-        }
-
-        return removido;
-    }
-
-    /**
-     * Obtiene el total como double para compatibilidad con código existente.
-     * @deprecated Usar getTotal() que retorna BigDecimal
-     * @return total como double
-     */
-    @Deprecated
-    public double getTotalAsDouble() {
-        return total != null ? total.doubleValue() : 0.0;
-    }
-
-    /**
-     * Establece el total desde un valor double.
-     * @deprecated Usar setTotal(BigDecimal)
-     * @param total total como double
-     */
-    @Deprecated
-    public void setTotalFromDouble(double total) {
-        this.total = BigDecimal.valueOf(total);
-        this.fechaActualizacion = Instant.now();
     }
 }

@@ -4,8 +4,6 @@ import lombok.Data;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -40,14 +38,14 @@ public class PedidoResponse {
     private String nombreUsuario;
 
     /**
+     * Email del usuario que realizó el pedido.
+     */
+    private String emailUsuario;
+
+    /**
      * Lista de items incluidos en el pedido.
      */
     private List<ItemPedidoResponse> productos;
-
-    /**
-     * Total del pedido.
-     */
-    private BigDecimal total;
 
     /**
      * Fecha de creación del pedido.
@@ -115,6 +113,24 @@ public class PedidoResponse {
     private Integer cantidadTotalItems;
 
     /**
+     * Devuelve el total del pedido formateado en formato español (punto para miles, coma para decimales)
+     */
+    public String getTotalFormateado() {
+        double total = 0.0;
+        if (productos != null) {
+            for (ItemPedidoResponse item : productos) {
+                if (item.getSubtotal() != null) total += item.getSubtotal();
+            }
+        }
+        java.text.DecimalFormat df = new java.text.DecimalFormat("###,##0.00");
+        java.text.DecimalFormatSymbols symbols = new java.text.DecimalFormatSymbols();
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator('.');
+        df.setDecimalFormatSymbols(symbols);
+        return df.format(total);
+    }
+
+    /**
      * Clase interna para representar un item del pedido en la respuesta.
      */
     @Data
@@ -141,12 +157,12 @@ public class PedidoResponse {
         /**
          * Precio unitario al momento de la compra.
          */
-        private BigDecimal precioUnitario;
+        private Double precioUnitario;
 
         /**
          * Subtotal del item (cantidad × precio unitario).
          */
-        private BigDecimal subtotal;
+        private Double subtotal;
 
         /**
          * Categoría del producto.
@@ -157,5 +173,31 @@ public class PedidoResponse {
          * URL de la imagen del producto.
          */
         private String imagenUrl;
+
+        /**
+         * Devuelve el precio unitario formateado en formato español
+         */
+        public String getPrecioUnitarioFormateado() {
+            if (precioUnitario == null) return "0,00";
+            java.text.DecimalFormat df = new java.text.DecimalFormat("###,##0.00");
+            java.text.DecimalFormatSymbols symbols = new java.text.DecimalFormatSymbols();
+            symbols.setDecimalSeparator(',');
+            symbols.setGroupingSeparator('.');
+            df.setDecimalFormatSymbols(symbols);
+            return df.format(precioUnitario);
+        }
+
+        /**
+         * Devuelve el subtotal formateado en formato español
+         */
+        public String getSubtotalFormateado() {
+            if (subtotal == null) return "0,00";
+            java.text.DecimalFormat df = new java.text.DecimalFormat("###,##0.00");
+            java.text.DecimalFormatSymbols symbols = new java.text.DecimalFormatSymbols();
+            symbols.setDecimalSeparator(',');
+            symbols.setGroupingSeparator('.');
+            df.setDecimalFormatSymbols(symbols);
+            return df.format(subtotal);
+        }
     }
 }

@@ -2,16 +2,37 @@ let productos = [];
 let carrito = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Página pública: no se requiere JWT ni rol
+    const jwt = localStorage.getItem('jwt');
     const role = localStorage.getItem('role');
-    if (role && role.toUpperCase() === 'ADMIN') {
+    const path = window.location.pathname;
+    // Si no está autenticado, redirigir a login
+    if (!jwt || !role) {
+        localStorage.clear();
+        window.location.replace('login.html');
+        return;
+    }
+    if (role.toUpperCase() === 'ADMIN') {
         mostrarFormularioAdmin();
+        await cargarProductos(); // Mostrar productos para gestión
+    } else if (role.toUpperCase() === 'CLIENTE') {
+        // Si estamos en carrito.html, no mostrar productos, solo el carrito
+        if (path.endsWith('carrito.html')) {
+            // Solo cargar productos si no están cargados (para mostrar nombres y precios)
+            if (!productos || productos.length === 0) {
+                await cargarProductos(true); // true = no renderizar productos
+            }
+            mostrarCarritoPagina();
+        } else {
+            await cargarProductos(); // Mostrar productos con opción de carrito
+        }
     } else {
-        await cargarProductos();
+        // Rol desconocido, limpiar y redirigir
+        localStorage.clear();
+        window.location.replace('login.html');
     }
 });
 
-async function cargarProductos() {
+async function cargarProductos(soloDatos = false) {
     // Permite cargar productos sin autenticación
     let headers = { 'Accept': 'application/json' };
     const jwt = localStorage.getItem('jwt');
@@ -21,7 +42,7 @@ async function cargarProductos() {
         const res = await fetch('/api/productos', { headers });
         if (res.ok) {
             productos = await res.json();
-            mostrarProductos();
+            if (!soloDatos) mostrarProductos();
             // Si no hay productos válidos y es admin, mostrar botón para inicializar
             const role = localStorage.getItem('role');
             if (productos.length === 0 && role && role.toUpperCase() === 'ADMIN') {
@@ -81,20 +102,22 @@ function mostrarProductos() {
         return;
     }
 
+    // Aplicar grid de 3 columnas
+    div.className = 'productos-grid-cards';
     div.innerHTML = productos.map(p => `
-        <div class="producto" id="producto-${p.id}">
-            <div class="producto-header">
-                <h3>${p.nombre}</h3>
-                <span class="badge-stock ${p.stock > 0 ? 'stock-disponible' : 'stock-agotado'}">
+        <div class="producto-card">
+            <div class="producto-header" style="flex-direction:column;align-items:flex-start;">
+                <h3 style="text-align:left;width:100%;margin-bottom:0.2em;">${p.nombre}</h3>
+                <span class="badge-stock ${p.stock > 0 ? 'stock-disponible' : 'stock-agotado'}" style="margin-top:0.3em;">
                     Stock: ${p.stock}
                 </span>
             </div>
             <div class="producto-descripcion">${p.descripcion || 'Sin descripción'}</div>
-            <div class="producto-precio">€${p.precio.toFixed(2)}</div>
+            <div class="producto-precio" style="text-align:center;width:100%;">${p.precioFormateado ? p.precioFormateado : formatearPrecio(p.precio)} €</div>
 
             ${role === 'CLIENTE' && p.stock > 0 ? `
                 <div class="producto-acciones">
-                    <button onclick="agregarAlCarrito('${p.id}')" class="btn btn-primary">
+                    <button onclick="agregarAlCarrito('${p.id}')" class="btn btn-primary" title="Agregar ${p.nombre} al Carrito" style="width:100%;display:block;">
                         Agregar al Carrito
                     </button>
                 </div>
@@ -102,10 +125,10 @@ function mostrarProductos() {
 
             ${role === 'ADMIN' ? `
                 <div class="producto-acciones">
-                    <button onclick="editarProducto('${p.id}')" class="btn btn-secondary">
+                    <button onclick="editarProducto('${p.id}')" class="btn btn-secondary" title="Editar ${p.nombre}">
                         Editar
                     </button>
-                    <button onclick="eliminarProducto('${p.id}')" class="btn btn-danger">
+                    <button onclick="eliminarProducto('${p.id}')" class="btn btn-danger" title="Eliminar ${p.nombre}">
                         Eliminar
                     </button>
                 </div>
@@ -114,109 +137,93 @@ function mostrarProductos() {
     `).join('');
 }
 
+// Inicializar carrito desde localStorage
+try {
+    const carritoGuardado = localStorage.getItem('carrito');
+    if (carritoGuardado) {
+        carrito = JSON.parse(carritoGuardado);
+    }
+} catch { }
+
+function guardarCarrito() {
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+}
+
 function agregarAlCarrito(productoId) {
     const producto = productos.find(p => p.id === productoId);
-    if (!producto) return;
-
-    const itemExistente = carrito.find(item => item.productoId === productoId);
-
-    if (itemExistente) {
-        if (itemExistente.cantidad < producto.stock) {
-            itemExistente.cantidad++;
+    if (!producto || producto.stock < 1) return;
+    let item = carrito.find(i => i.productoId === productoId);
+    if (item) {
+        if (item.cantidad < producto.stock) {
+            item.cantidad++;
         } else {
-            mostrarMensaje('No hay suficiente stock disponible', 'error');
+            mostrarMensaje('No hay más stock disponible', 'error');
             return;
         }
     } else {
         carrito.push({ productoId, cantidad: 1 });
     }
-
-    mostrarCarrito();
+    guardarCarrito();
     mostrarMensaje(`${producto.nombre} agregado al carrito`, 'success');
 }
 
 function removerDelCarrito(productoId) {
     carrito = carrito.filter(item => item.productoId !== productoId);
-    mostrarCarrito();
+    guardarCarrito();
+    mostrarCarritoPagina();
 }
 
 function cambiarCantidad(productoId, nuevaCantidad) {
-    const producto = productos.find(p => p.id === productoId);
-    const item = carrito.find(item => item.productoId === productoId);
-
-    if (!producto || !item) return;
-
-    if (nuevaCantidad <= 0) {
+    if (nuevaCantidad < 1) {
         removerDelCarrito(productoId);
         return;
     }
-
-    if (nuevaCantidad > producto.stock) {
-        mostrarMensaje('No hay suficiente stock disponible', 'error');
-        return;
+    const item = carrito.find(i => i.productoId === productoId);
+    if (item) {
+        item.cantidad = nuevaCantidad;
     }
-
-    item.cantidad = nuevaCantidad;
-    mostrarCarrito();
+    guardarCarrito();
+    mostrarCarritoPagina();
 }
 
-function mostrarCarrito() {
+function mostrarCarritoPagina() {
     const role = localStorage.getItem('role');
-
     if (role !== 'CLIENTE') return;
-
-    let carritoDiv = document.getElementById('carrito');
-    if (!carritoDiv) {
-        carritoDiv = document.createElement('div');
-        carritoDiv.id = 'carrito';
-        carritoDiv.className = 'carrito-container';
-        document.body.appendChild(carritoDiv);
-    }
-
+    let carritoDiv = document.getElementById('carrito-list');
+    if (!carritoDiv) return;
     if (carrito.length === 0) {
-        carritoDiv.innerHTML = `
-            <div class="carrito">
-                <h3>Carrito de Compras</h3>
-                <p>Tu carrito está vacío</p>
-            </div>
-        `;
+        carritoDiv.innerHTML = '<div class="info info-carrito-vacio" style="background:#ffeaea;border-radius:1em;padding:2em 1em;margin:2em auto;text-align:center;box-shadow:0 2px 12px 0 rgba(255,0,0,0.06);color:#c62828;font-size:1.2em;max-width:400px;display:flex;flex-direction:column;align-items:center;gap:0.7em;font-weight:bold;">'
+            + 'Tu carrito está vacío'
+            + '</div>';
         return;
     }
-
     let total = 0;
     const itemsHTML = carrito.map(item => {
         const producto = productos.find(p => p.id === item.productoId);
         if (!producto) return '';
-
         const subtotal = producto.precio * item.cantidad;
         total += subtotal;
-
         return `
             <div class="carrito-item">
                 <div class="item-info">
                     <span class="item-nombre">${producto.nombre}</span>
-                    <span class="item-precio">€${producto.precio.toFixed(2)} c/u</span>
+                    <span class="item-precio">${formatearPrecio(producto.precio)} € c/u</span>
                 </div>
                 <div class="item-cantidad">
                     <button onclick="cambiarCantidad('${item.productoId}', ${item.cantidad - 1})" class="btn-cantidad">-</button>
                     <span>${item.cantidad}</span>
                     <button onclick="cambiarCantidad('${item.productoId}', ${item.cantidad + 1})" class="btn-cantidad">+</button>
                 </div>
-                <div class="item-subtotal">€${subtotal.toFixed(2)}</div>
+                <div class="item-subtotal">${formatearPrecio(subtotal)} €</div>
                 <button onclick="removerDelCarrito('${item.productoId}')" class="btn-remover">×</button>
             </div>
         `;
     }).join('');
-
     carritoDiv.innerHTML = `
         <div class="carrito">
             <h3>Carrito de Compras</h3>
-            <div class="carrito-items">
-                ${itemsHTML}
-            </div>
-            <div class="carrito-total">
-                <strong>Total: €${total.toFixed(2)}</strong>
-            </div>
+            <div class="carrito-items">${itemsHTML}</div>
+            <div class="carrito-total"><strong>Total: ${formatearPrecio(total)} €</strong></div>
             <div class="carrito-acciones">
                 <button onclick="realizarPedido()" class="btn btn-primary">Realizar Pedido</button>
                 <button onclick="vaciarCarrito()" class="btn btn-secondary">Vaciar Carrito</button>
@@ -225,9 +232,14 @@ function mostrarCarrito() {
     `;
 }
 
-function vaciarCarrito() {
+function vaciarCarrito(skipConfirm = false) {
+    if (!skipConfirm) {
+        const confirmar = confirm('¿Estás seguro de que deseas vaciar el carrito?');
+        if (!confirmar) return;
+    }
     carrito = [];
-    mostrarCarrito();
+    guardarCarrito();
+    mostrarCarritoPagina();
 }
 
 async function realizarPedido() {
@@ -235,7 +247,9 @@ async function realizarPedido() {
         mostrarMensaje('El carrito está vacío', 'error');
         return;
     }
-
+    // Confirmación antes de realizar el pedido
+    const confirmar = confirm('¿Estás seguro de que deseas realizar el pedido?');
+    if (!confirmar) return;
     const jwt = localStorage.getItem('jwt');
     const pedido = {
         productos: carrito.map(item => ({
@@ -243,7 +257,6 @@ async function realizarPedido() {
             cantidad: item.cantidad
         }))
     };
-
     try {
         const res = await fetch('/api/pedidos', {
             method: 'POST',
@@ -254,11 +267,9 @@ async function realizarPedido() {
             },
             body: JSON.stringify(pedido)
         });
-
         if (res.ok) {
             mostrarMensaje('Pedido realizado con éxito', 'success');
-            vaciarCarrito();
-            // Opcional: redirigir a página de pedidos
+            vaciarCarrito(true); // No pedir confirmación aquí
             setTimeout(() => {
                 window.location.href = 'pedidos.html';
             }, 2000);
@@ -401,10 +412,45 @@ function mostrarMensaje(mensaje, tipo) {
         document.body.appendChild(messageDiv);
     }
 
-    messageDiv.innerHTML = `<div class="alert alert-${tipo}">${mensaje}</div>`;
+    // Notificación destacada para éxito en carrito
+    let icon = '';
+    let customClass = '';
+    if (tipo === 'success') {
+        icon = '🛒';
+        customClass = 'cart-success';
+    } else if (tipo === 'error') {
+        icon = '❌';
+        customClass = 'cart-error';
+    } else if (tipo === 'info') {
+        icon = 'ℹ️';
+        customClass = 'cart-info';
+    }
+
+    messageDiv.innerHTML = `<div class="alert alert-${tipo} ${customClass}"><span class="msg-icon">${icon}</span> <span class="msg-text">${mensaje}</span></div>`;
     messageDiv.style.display = 'block';
+    messageDiv.style.position = 'fixed';
+    messageDiv.style.top = '2.5em';
+    messageDiv.style.left = '50%';
+    messageDiv.style.transform = 'translateX(-50%)';
+    messageDiv.style.zIndex = '9999';
+    messageDiv.style.width = 'auto';
+    messageDiv.style.maxWidth = '90vw';
+    messageDiv.style.pointerEvents = 'none';
+
+    // Animación de entrada
+    messageDiv.firstChild.classList.add('msg-fade-in');
+    setTimeout(() => {
+        if (messageDiv.firstChild) messageDiv.firstChild.classList.remove('msg-fade-in');
+    }, 400);
 
     setTimeout(() => {
         messageDiv.style.display = 'none';
-    }, 5000);
+    }, 2500);
+}
+
+function formatearPrecio(precio) {
+    // Asegura que el precio sea un número y lo formatea en formato español
+    const num = Number(precio);
+    if (isNaN(num)) return precio;
+    return num.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }

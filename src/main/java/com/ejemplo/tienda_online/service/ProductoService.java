@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,8 +23,8 @@ public class ProductoService {
 
     private final ProductoRepository productoRepository;
 
-    private static final BigDecimal MIN_PRICE = BigDecimal.valueOf(0.01);
-    private static final BigDecimal MAX_PRICE = BigDecimal.valueOf(999999.99);
+    private static final double MIN_PRICE = 0.01;
+    private static final double MAX_PRICE = 999999.99;
     private static final int MIN_STOCK = 0;
     private static final int MAX_STOCK = 999999;
 
@@ -41,7 +40,7 @@ public class ProductoService {
             boolean modificado = false;
             // Corrige precio nulo o no numérico
             if (p.getPrecio() == null) {
-                p.setPrecio(BigDecimal.ZERO);
+                p.setPrecio(0.0);
                 modificado = true;
             }
             // Corrige stock nulo o no numérico
@@ -209,12 +208,12 @@ public class ProductoService {
         validatePrice(producto.getPrecio());
         validateStock(producto.getStock());
     }
-      private void validatePrice(BigDecimal precio) {
-        if (precio == null || precio.compareTo(BigDecimal.ZERO) <= 0) {
+      private void validatePrice(Double precio) {
+        if (precio == null || precio <= 0) {
             throw new BusinessException("El precio debe ser mayor a 0");
         }
 
-        if (precio.compareTo(MIN_PRICE) < 0 || precio.compareTo(MAX_PRICE) > 0) {
+        if (precio < MIN_PRICE || precio > MAX_PRICE) {
             throw new BusinessException("El precio debe estar entre " + MIN_PRICE + " y " + MAX_PRICE);
         }
     }
