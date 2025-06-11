@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
 
-                const res = await fetch('/auth/login', {
+                // CORRECCIÓN: endpoint correcto para login
+                const res = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
@@ -28,11 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (res.ok) {
                     const data = await res.json();
                     console.log('Login exitoso:', data);
+                    console.log('Guardando en localStorage: token:', data.token, '| role:', data.role, '| username:', data.username || username);
 
                     // Limpiar localStorage primero
                     localStorage.clear();
 
                     // Guardar datos de sesión
+                    console.log('[auth.js] Guardando en localStorage:', { token: data.token, role: data.role, username: data.username || username });
                     localStorage.setItem('jwt', data.token);
                     localStorage.setItem('role', data.role);
                     localStorage.setItem('username', data.username || username);
@@ -43,9 +46,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Pequeño delay para asegurar que localStorage se escriba
                     setTimeout(() => {
-                        // Redirigir siempre a la página de inicio después del login exitoso
-                        window.location.replace('/');
-                    }, 100);
+                        // Redirigir según el rol (insensible a mayúsculas)
+                        const role = (data.role || '').toUpperCase();
+                        console.log('[auth.js] Redirigiendo según rol:', role);
+                        if (role === 'ADMIN') {
+                            window.location.replace('admin.html');
+                        } else if (role === 'CLIENTE') {
+                            window.location.replace('productos.html');
+                        } else {
+                            window.location.replace('index.html');
+                        }
+                    }, 350); // Aumentado a 350ms para máxima robustez
 
                 } else {
                     let msg = 'Usuario o contraseña incorrectos';

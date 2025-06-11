@@ -35,7 +35,33 @@ public class ProductoService {
      */
     public List<Producto> getAll() {
         log.info("Obteniendo todos los productos");
-        return productoRepository.findAll();
+        List<Producto> productos = productoRepository.findAll();
+        boolean huboCorregidos = false;
+        for (Producto p : productos) {
+            boolean modificado = false;
+            // Corrige precio nulo o no numérico
+            if (p.getPrecio() == null) {
+                p.setPrecio(BigDecimal.ZERO);
+                modificado = true;
+            }
+            // Corrige stock nulo o no numérico
+            if (p.getStock() == null) {
+                p.setStock(0);
+                modificado = true;
+            }
+            if (modificado) {
+                productoRepository.save(p);
+                huboCorregidos = true;
+                log.warn("Producto corregido automáticamente: {} (precio: {}, stock: {})", p.getNombre(), p.getPrecio(), p.getStock());
+            }
+        }
+        if (huboCorregidos) {
+            log.warn("Se corrigieron productos con datos nulos en precio o stock antes de enviar al frontend.");
+        }
+        // Devuelve solo productos válidos
+        return productos.stream()
+            .filter(p -> p.getPrecio() != null && p.getStock() != null)
+            .toList();
     }
 
     /**

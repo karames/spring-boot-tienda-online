@@ -8,22 +8,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const userMenuDropdown = document.getElementById('user-menu-dropdown');
     const adminLink = document.getElementById('admin-link');
     const productosLink = document.getElementById('productos-link');
+    if (productosLink) productosLink.style.display = '';
     const pedidosLink = document.getElementById('pedidos-link');
     const inicioLink = document.getElementById('inicio-link');
     const loginLink = document.getElementById('login-link');
     const registerLink = document.getElementById('register-link');
     // Por defecto, oculta enlaces privados
-    if (productosLink) productosLink.style.display = 'none';
     if (pedidosLink) pedidosLink.style.display = 'none';
     if (adminLink) adminLink.style.display = 'none';
     if (userMenu) userMenu.style.display = 'none';
+    // Ocultar Inicio y Documentación si hay sesión
+    if (inicioLink) inicioLink.style.display = jwt ? 'none' : '';
+    const docsLink = document.getElementById('docs-link');
+    if (docsLink) docsLink.style.display = jwt ? 'none' : '';
     // Si hay sesión, muestra enlaces privados y menú usuario
     if (jwt && userMenu && userInfo) {
         userInfo.textContent = `${username || ''} (${role || ''})`;
         userMenu.style.display = '';
-        if (productosLink) productosLink.style.display = '';
         if (pedidosLink) pedidosLink.style.display = '';
-        if (adminLink) adminLink.style.display = (role === 'ADMIN') ? '' : 'none';
+        if (adminLink) adminLink.style.display = (role && role.toUpperCase() === 'ADMIN') ? '' : 'none';
 
         // Ocultar enlaces de autenticación cuando ya está logueado
         if (loginLink) loginLink.style.display = 'none';

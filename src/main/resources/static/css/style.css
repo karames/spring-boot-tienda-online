@@ -482,3 +482,93 @@ button:hover,
 .auth-footer .link:hover {
     color: #ffb347;
 }
+
+/* --- MENÚ DE USUARIO (DROPDOWN) --- */
+.user-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-left: 1em;
+}
+
+.user-menu-btn {
+    background: #fff;
+    color: #2a4d7a;
+    border: 1.5px solid #bfc9d1;
+    border-radius: 22px;
+    padding: 0.45em 1.2em 0.45em 0.9em;
+    font-size: 1em;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    box-shadow: 0 2px 8px #2a4d7a11;
+    cursor: pointer;
+    transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+}
+
+.user-menu-btn:hover,
+.user-menu-btn:focus {
+    border: 1.5px solid #2a4d7a;
+    background: #f0f6ff;
+    box-shadow: 0 4px 16px #2a4d7a22;
+}
+
+.user-menu-dropdown {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    min-width: 170px;
+    background: #fff;
+    border: 1.5px solid #bfc9d1;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px #2a4d7a22;
+    padding: 0.5em 0.2em;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    animation: fadeInDropdown 0.18s;
+}
+
+@keyframes fadeInDropdown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-menu-dropdown button {
+    background: none;
+    color: #d32f2f;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7em 1em;
+    font-size: 1em;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+}
+
+.user-menu-dropdown button:hover {
+    background: #ffebee;
+    color: #b71c1c;
+}
+
+@media (max-width: 600px) {
+    .user-menu-dropdown {
+        right: -10px;
+        min-width: 140px;
+    }
+
+    .user-menu-btn {
+        padding: 0.45em 0.7em 0.45em 0.7em;
+        font-size: 0.98em;
+    }
+}

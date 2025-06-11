@@ -55,7 +55,7 @@ public class SecurityConfig {
                     "/error"
                 ).permitAll()
                 // Endpoints de productos
-                .requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/**").hasAnyRole("CLIENTE", "ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/productos").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasRole("ADMIN")
@@ -66,7 +66,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/pedidos/**").hasRole("ADMIN") // Cambiar estado
                 // Páginas web
                 .requestMatchers("/admin.html", "/admin_db.html").hasRole("ADMIN")
-                .requestMatchers("/productos.html", "/pedidos.html").hasAnyRole("CLIENTE", "ADMIN")
+                .requestMatchers("/productos.html", "/pedidos.html").permitAll()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(eh -> eh

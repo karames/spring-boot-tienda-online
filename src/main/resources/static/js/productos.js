@@ -2,44 +2,35 @@ let productos = [];
 let carrito = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Pequeño delay para asegurar que localStorage esté disponible
-    await new Promise(resolve => setTimeout(resolve, 50));
-
-    const jwt = localStorage.getItem('jwt');
+    // Página pública: no se requiere JWT ni rol
     const role = localStorage.getItem('role');
-
-    console.log('Verificando acceso productos - JWT:', !!jwt, 'Role:', role);
-
-    // Verificación simple
-    if (!jwt) {
-        console.log('Sin JWT, redirigiendo a login');
-        localStorage.clear(); // Limpiar datos corruptos
-        window.location.replace('login.html');
-        return;
-    }
-
-    console.log('JWT válido, cargando productos');
-
-    await cargarProductos();
-    mostrarCarrito();
-
-    // Si es admin, mostrar botón para agregar productos
-    if (role === 'ADMIN') {
+    if (role && role.toUpperCase() === 'ADMIN') {
         mostrarFormularioAdmin();
+    } else {
+        await cargarProductos();
     }
 });
 
 async function cargarProductos() {
+    // Permite cargar productos sin autenticación
+    let headers = { 'Accept': 'application/json' };
     const jwt = localStorage.getItem('jwt');
+    if (jwt) headers['Authorization'] = 'Bearer ' + jwt;
 
     try {
-        const res = await fetch('/api/productos', {
-            headers: { 'Authorization': 'Bearer ' + jwt }
-        });
-
+        const res = await fetch('/api/productos', { headers });
         if (res.ok) {
             productos = await res.json();
             mostrarProductos();
+            // Si no hay productos válidos y es admin, mostrar botón para inicializar
+            const role = localStorage.getItem('role');
+            if (productos.length === 0 && role && role.toUpperCase() === 'ADMIN') {
+                const div = document.getElementById('productos-list');
+                div.innerHTML = `<div class='info'>No hay productos en la base de datos.</div><button id='btn-init-productos' class='btn btn-primary'>Cargar productos de prueba</button>`;
+                document.getElementById('btn-init-productos').onclick = async () => {
+                    await inicializarProductosDePrueba();
+                };
+            }
         } else {
             let msg = 'No se pudieron cargar los productos.';
             try {
@@ -50,6 +41,34 @@ async function cargarProductos() {
         }
     } catch (error) {
         document.getElementById('productos-list').innerHTML = `<div class="error">Error de conexión: ${error.message}</div>`;
+    }
+}
+
+async function inicializarProductosDePrueba() {
+    const jwt = localStorage.getItem('jwt');
+    const btn = document.getElementById('btn-init-productos');
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Cargando...';
+    }
+    try {
+        const res = await fetch('/api/admin/init/productos', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + jwt,
+                'Accept': 'application/json'
+            }
+        });
+        if (res.ok) {
+            mostrarMensaje('Productos de prueba cargados correctamente', 'success');
+            await cargarProductos();
+        } else {
+            mostrarMensaje('Error al cargar productos de prueba', 'error');
+            if (btn) btn.disabled = false;
+        }
+    } catch (error) {
+        mostrarMensaje('Error de conexión: ' + error.message, 'error');
+        if (btn) btn.disabled = false;
     }
 }
 
@@ -230,7 +249,8 @@ async function realizarPedido() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + jwt
+                'Authorization': 'Bearer ' + jwt,
+                'Accept': 'application/json'
             },
             body: JSON.stringify(pedido)
         });
@@ -308,7 +328,8 @@ async function guardarProducto() {
             method,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + jwt
+                'Authorization': 'Bearer ' + jwt,
+                'Accept': 'application/json'
             },
             body: JSON.stringify(producto)
         });
@@ -354,7 +375,8 @@ async function eliminarProducto(id) {
         const res = await fetch(`/api/productos/${id}`, {
             method: 'DELETE',
             headers: {
-                'Authorization': 'Bearer ' + jwt
+                'Authorization': 'Bearer ' + jwt,
+                'Accept': 'application/json'
             }
         });
 

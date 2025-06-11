@@ -2,27 +2,27 @@ let pedidos = [];
 let productos = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Espera a que localStorage esté disponible y estable
+    await new Promise(resolve => setTimeout(resolve, 150));
+
     const jwt = localStorage.getItem('jwt');
     const role = localStorage.getItem('role');
+    console.log('[PEDIDOS] JWT presente:', !!jwt, '| Role:', role);
 
-    // Verificación simple
-    if (!jwt) {
-        window.location.href = 'login.html';
+    if (!jwt || !role) {
+        localStorage.clear();
+        window.location.replace('login.html');
         return;
     }
-
-    console.log('JWT válido, cargando pedidos');
-
-    // Cargar productos para mostrar nombres en lugar de IDs
-    await cargarProductos();
-
-    if (role === 'ADMIN') {
+    if (role.toUpperCase() === 'ADMIN') {
         await cargarTodosLosPedidos();
         mostrarVistaAdmin();
-    } else if (role === 'CLIENTE') {
+    } else if (role.toUpperCase() === 'CLIENTE') {
         await cargarMisPedidos();
         mostrarVistaCliente();
     }
+    // Cargar productos para que los nombres y totales estén disponibles en la vista
+    await cargarProductos();
 });
 
 async function cargarProductos() {
@@ -30,7 +30,10 @@ async function cargarProductos() {
 
     try {
         const res = await fetch('/api/productos', {
-            headers: { 'Authorization': 'Bearer ' + jwt }
+            headers: {
+                'Authorization': 'Bearer ' + jwt,
+                'Accept': 'application/json'
+            }
         });
 
         if (res.ok) {
@@ -46,7 +49,10 @@ async function cargarMisPedidos() {
 
     try {
         const res = await fetch('/api/pedidos/mios', {
-            headers: { 'Authorization': 'Bearer ' + jwt }
+            headers: {
+                'Authorization': 'Bearer ' + jwt,
+                'Accept': 'application/json'
+            }
         });
 
         if (res.ok) {
@@ -66,7 +72,10 @@ async function cargarTodosLosPedidos() {
 
     try {
         const res = await fetch('/api/pedidos', {
-            headers: { 'Authorization': 'Bearer ' + jwt }
+            headers: {
+                'Authorization': 'Bearer ' + jwt,
+                'Accept': 'application/json'
+            }
         });
 
         if (res.ok) {
@@ -235,4 +244,34 @@ function mostrarMensaje(mensaje, tipo) {
     setTimeout(() => {
         messageDiv.style.display = 'none';
     }, 5000);
+}
+
+async function realizarPedido(pedido) {
+    const jwt = localStorage.getItem('jwt');
+
+    try {
+        const res = await fetch('/api/pedidos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + jwt,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(pedido)
+        });
+
+        if (res.ok) {
+            const nuevoPedido = await res.json();
+            mostrarMensaje('Pedido realizado con éxito. ID: ' + nuevoPedido.id, 'success');
+
+            // Agregar el nuevo pedido a la lista y mostrarlo
+            pedidos.push(nuevoPedido);
+            mostrarPedidos();
+        } else {
+            const error = await res.json();
+            mostrarMensaje(error.message || 'Error al realizar el pedido', 'error');
+        }
+    } catch (error) {
+        mostrarMensaje('Error de conexión: ' + error.message, 'error');
+    }
 }

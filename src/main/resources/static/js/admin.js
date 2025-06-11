@@ -6,31 +6,27 @@ let currentSection = 'dashboard';
 
 // Inicialización simple
 document.addEventListener('DOMContentLoaded', async () => {
-    // Pequeño delay para asegurar que localStorage esté disponible
-    await new Promise(resolve => setTimeout(resolve, 50));
+    // Espera a que localStorage esté disponible y estable
+    await new Promise(resolve => setTimeout(resolve, 150));
 
     const jwt = localStorage.getItem('jwt');
     const role = localStorage.getItem('role');
+    console.log('[ADMIN] JWT presente:', !!jwt, '| Role:', role);
 
-    console.log('Verificando acceso admin - JWT:', !!jwt, 'Role:', role);
-
-    // Verificación simple: si no hay JWT o no es ADMIN, redirigir
-    if (!jwt || role !== 'ADMIN') {
-        console.log('Acceso denegado, redirigiendo a login');
-        alert('Acceso denegado. Se requieren permisos de administrador.');
-        localStorage.clear(); // Limpiar datos corruptos
+    if (!jwt || !role) {
+        localStorage.clear();
         window.location.replace('login.html');
         return;
     }
-
-    // Si llega aquí, el usuario es admin válido
-    console.log('Acceso de admin válido');
+    console.log('[ADMIN] Acceso concedido. JWT y rol válidos.');
 
     // Inicializar navegación
     initAdminNavigation();
 
     // Cargar datos iniciales
     await loadDashboard();
+    // Cargar productos y pedidos para asegurar visibilidad inmediata
+    await loadPedidos();
 });
 
 // Navegación entre secciones
@@ -209,7 +205,10 @@ async function loadProductosInfo() {
         try {
             const jwt = localStorage.getItem('jwt');
             const res = await fetch('/api/productos', {
-                headers: { 'Authorization': 'Bearer ' + jwt }
+                headers: {
+                    'Authorization': 'Bearer ' + jwt,
+                    'Accept': 'application/json'
+                }
             });
             if (res.ok) {
                 productos = await res.json();

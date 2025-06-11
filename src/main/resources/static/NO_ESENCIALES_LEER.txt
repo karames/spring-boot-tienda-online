@@ -1,0 +1,1 @@
+Esta carpeta contendría los archivos no esenciales eliminados del frontend principal. Si necesitas restaurar alguno, consulta tu respaldo o historial de versiones.
