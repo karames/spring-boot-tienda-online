@@ -52,7 +52,8 @@ public class SecurityConfig {
                     "/index.html", "/", "/login.html", "/register.html", "/error.html",
                     "/documentacion.html", // Permitir acceso a documentación sin autenticación
                     "/css/**", "/js/**", "/img/**", "/favicon.ico", "/favicon.svg",
-                    "/error"
+                    "/error",
+                    "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**" // Swagger UI y OpenAPI
                 ).permitAll()
                 // Endpoints de productos
                 .requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/**").permitAll()

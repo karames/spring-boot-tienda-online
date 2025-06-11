@@ -12,9 +12,9 @@
 <body>
     <nav class="main-nav">
         <div class="nav-center">
+            <a href="admin.html" id="admin-link">⚙️ Admin</a>
             <a href="/" id="inicio-link">🏠 Inicio</a>
             <a href="pedidos.html" id="pedidos-link" style="display:none;">📋 Mis pedidos</a>
-            <a href="admin.html" id="admin-link" style="display:none;">⚙️ Admin</a>
             <a href="login.html" id="login-link">🔐 Iniciar sesión</a>
             <a href="register.html" id="register-link">📝 Registrarse</a>
             <a href="documentacion.html" id="docs-link">📚 Documentación</a>
@@ -32,145 +32,144 @@
         </div>
     </nav>
     <div class="welcome-container">
-        <header class="simple-header">
-            <h1>🛠️ Panel de Administración</h1>
-            <p>Gestiona productos, pedidos y usuarios de la tienda online</p>
+        <header class="simple-header" style="text-align: center;">
+            <h1>⚙️ Panel de Administración</h1>
+            <p style="text-align: center;">Gestiona productos, pedidos y usuarios de la tienda online</p>
         </header>
+        <div class="container">
+            <!-- Dashboard -->
+            <section id="dashboard-section" class="admin-section-simple section-box">
+                <div class="db-info-panel info-box-simple" id="db-info-panel">
+                    <h3>📊 Información de la Base de Datos</h3>
+                    <ul id="db-info-list">
+                        <!-- Aquí se cargará dinámicamente la información de la base de datos -->
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Gestión de Pedidos -->
+            <section id="pedidos-section" class="admin-section section-box" style="display:none;">
+                <h2>📋 Gestión de Pedidos</h2>
+                <div class="filter-bar">
+                    <select id="estado-filter">
+                        <option value="">Todos los estados</option>
+                        <option value="PENDIENTE">Pendientes</option>
+                        <option value="ENVIADO">Enviados</option>
+                        <option value="ENTREGADO">Entregados</option>
+                        <option value="CANCELADO">Cancelados</option>
+                    </select>
+                    <button onclick="loadPedidos()" class="btn btn-secondary">🔍 Filtrar</button>
+                </div>
+                <div id="admin-pedidos" class="pedidos-list">
+                    <div class="loading">Cargando pedidos...</div>
+                </div>
+            </section>
+
+            <!-- Vista de Usuarios -->
+            <section id="usuarios-section" class="admin-section section-box" style="display:none;">
+                <h2>👥 Usuarios Registrados</h2>
+                <div class="section-actions">
+                    <button class="btn btn-primary" onclick="adminDataManager.loadAllUsers()">🔄 Recargar
+                        Usuarios</button>
+                </div>
+                <div id="users-list" class="usuarios-list">
+                    <div class="loading">Cargando usuarios...</div>
+                </div>
+            </section>
+        </div>
     </div>
-
-    <div class="admin-container-simple"> <!-- Navegación de secciones admin -->
-        <nav class="admin-nav-simple">
-            <button class="admin-tab-simple active" data-section="dashboard">📊 Dashboard</button>
-            <button class="admin-tab-simple" data-section="productos">📦 Gestionar Productos</button>
-            <button class="admin-tab-simple" data-section="pedidos">📋 Gestionar Pedidos</button>
-            <button class="admin-tab-simple" data-section="usuarios">👥 Ver Usuarios</button>
-        </nav>
-
-        <!-- Dashboard -->
-        <section id="dashboard-section" class="admin-section-simple">
-            <div class="stats-grid-simple">
-                <div class="stat-card-simple">
-                    <div class="stat-number" id="total-productos">-</div>
-                    <div class="stat-label">Total Productos</div>
-                </div>
-                <div class="stat-card-simple">
-                    <div class="stat-number" id="total-pedidos">-</div>
-                    <div class="stat-label">Total Pedidos</div>
-                </div>
-                <div class="stat-card-simple">
-                    <div class="stat-number" id="pedidos-pendientes">-</div>
-                    <div class="stat-label">Pedidos Pendientes</div>
-                </div>
-                <div class="stat-card-simple">
-                    <div class="stat-number" id="total-usuarios">-</div>
-                    <div class="stat-label">Total Usuarios</div>
-                </div>
-            </div>
-            <div class="db-info-panel" id="db-info-panel"
-                style="margin:2em 0 1em 0;padding:1.2em;background:#f8f9fa;border-radius:8px;box-shadow:0 2px 8px #0001;">
-                <h3 style="margin-top:0;">📊 Información de la Base de Datos</h3>
-                <ul id="db-info-list" style="list-style:none;padding-left:0;font-size:1.08em;"></ul>
-            </div>
-
-            <div class="quick-actions-simple">
-                <h3>🚀 Acciones Rápidas</h3>
-                <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="switchSection('productos')">
-                        ➕ Añadir Producto
-                    </button>
-                    <button class="btn btn-secondary" onclick="switchSection('pedidos')">
-                        📋 Ver Pedidos Pendientes
-                    </button>
-                    <button class="btn btn-info" onclick="loadDashboard()">
-                        🔄 Actualizar Dashboard
-                    </button>
-                </div>
-            </div>
-
-            <div class="admin-tools">
-                <h3>🛠️ Herramientas de Administración</h3>
-                <div class="tool-section">
-                    <h4>Gestión de Productos:</h4>
-                    <button class="btn btn-success" onclick="adminDataManager.initProductos()">
-                        🆕 Crear Productos de Prueba
-                    </button>
-                    <button class="btn btn-danger" onclick="adminDataManager.clearProductos()">
-                        🗑️ Eliminar Todos los Productos
-                    </button>
-                </div>
-
-                <div class="tool-section">
-                    <h4>Gestión de Usuarios:</h4>
-                    <button class="btn btn-success" onclick="adminDataManager.initUsers()">
-                        👥 Inicializar Usuarios de Prueba
-                    </button>
-                    <button class="btn btn-warning" onclick="adminDataManager.cleanupUsers()">
-                        🧹 Limpiar Usuarios (excepto admin)
-                    </button>
-                    <button class="btn btn-danger" onclick="adminDataManager.resetAdmin()">
-                        🔄 Restablecer Admin
-                    </button>
-                </div>
-
-                <div class="tool-section">
-                    <h4>Configuración Completa:</h4>
-                    <button class="btn btn-primary" onclick="adminDataManager.setupCompleteSystem()">
-                        ⚙️ Configurar Sistema Completo
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Gestión de Productos -->
-        <section id="productos-section" class="admin-section" style="display:none;">
-            <h2>📦 Gestión de Productos</h2>
-            <p>Desde aquí puedes crear, editar y eliminar productos. También puedes gestionar el stock.</p>
-            <div class="section-link">
-                <a href="productos.html" class="btn btn-primary">🔗 Ir a Gestión Completa de Productos</a>
-            </div>
-        </section>
-
-        <!-- Gestión de Pedidos -->
-        <section id="pedidos-section" class="admin-section" style="display:none;">
-            <h2>📋 Gestión de Pedidos</h2>
-
-            <div class="filter-bar">
-                <select id="estado-filter">
-                    <option value="">Todos los estados</option>
-                    <option value="PENDIENTE">Pendientes</option>
-                    <option value="ENVIADO">Enviados</option>
-                    <option value="ENTREGADO">Entregados</option>
-                    <option value="CANCELADO">Cancelados</option>
-                </select>
-                <button onclick="loadPedidos()" class="btn btn-secondary">🔍 Filtrar</button>
-            </div>
-
-            <div id="admin-pedidos" class="pedidos-list">
-                <div class="loading">Cargando pedidos...</div>
-            </div>
-        </section>
-
-        <!-- Vista de Usuarios -->
-        <section id="usuarios-section" class="admin-section" style="display:none;">
-            <h2>👥 Usuarios Registrados</h2>
-            <div class="section-actions">
-                <button class="btn btn-primary" onclick="adminDataManager.loadAllUsers()">
-                    🔄 Recargar Usuarios
-                </button>
-            </div>
-            <div id="users-list" class="usuarios-list">
-                <div class="loading">Cargando usuarios...</div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Mensajes de notificación -->
+    <footer class="modern-footer">
+        <div class="footer-bottom">
+            <p>&copy; 2025 Tienda Online - Desarrollado con Spring Boot</p>
+        </div>
+    </footer>
     <div id="notification" class="notification" style="display:none;"></div>
-
     <script src="js/app.js"></script>
     <script src="js/admin-data.js"></script>
     <script src="js/admin.js"></script>
     <script src="js/auth.js"></script>
+    <script>
+        // Animación de números en dashboard
+        document.addEventListener('DOMContentLoaded', function () {
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(m => {
+                    if (m.target.classList) {
+                        m.target.classList.add('admin-animate-number');
+                        setTimeout(() => m.target.classList.remove('admin-animate-number'), 800);
+                    }
+                });
+            });
+            document.querySelectorAll('.stat-number').forEach(el => {
+                observer.observe(el, { childList: true });
+            });
+        });
+
+        // Mostrar totales y más info en la info de la base de datos
+        async function loadDashboard() {
+            try {
+                const jwt = localStorage.getItem('jwt');
+                const headers = { 'Authorization': 'Bearer ' + jwt };
+
+                // Cargar productos
+                const productosRes = await fetch('/api/productos', { headers });
+                let productos = [];
+                if (productosRes.ok) {
+                    productos = await productosRes.json();
+                }
+
+                // Cargar pedidos
+                const pedidosRes = await fetch('/api/pedidos', { headers });
+                let pedidos = [];
+                if (pedidosRes.ok) {
+                    pedidos = await pedidosRes.json();
+                }
+
+                // Cargar usuarios (simulado o implementa tu endpoint)
+                let totalUsuarios = 2;
+                let usuarios = [];
+                try {
+                    const usuariosRes = await fetch('/api/admin/users', { headers });
+                    if (usuariosRes.ok) {
+                        usuarios = await usuariosRes.json();
+                        totalUsuarios = usuarios.length;
+                    }
+                } catch { }
+
+                // Estadísticas adicionales
+                const pedidosPendientes = pedidos.filter(p => p.estado === 'PENDIENTE').length;
+                const pedidosEnviados = pedidos.filter(p => p.estado === 'ENVIADO').length;
+                const pedidosEntregados = pedidos.filter(p => p.estado === 'ENTREGADO').length;
+                const pedidosCancelados = pedidos.filter(p => p.estado === 'CANCELADO').length;
+                const productosSinStock = productos.filter(p => (p.stock || 0) === 0).length;
+                const totalStock = productos.reduce((sum, p) => sum + (p.stock || 0), 0);
+                const productosUnicosPedidos = new Set(pedidos.flatMap(p => p.productos.map(i => i.productoId))).size;
+                const ultimoPedido = pedidos.length > 0 ? new Date(Math.max(...pedidos.map(p => new Date(p.fecha)))).toLocaleString('es-ES') : 'N/A';
+                const primerPedido = pedidos.length > 0 ? new Date(Math.min(...pedidos.map(p => new Date(p.fecha)))).toLocaleString('es-ES') : 'N/A';
+
+                // Mostrar en la lista
+                const dbInfoList = document.getElementById('db-info-list');
+                dbInfoList.innerHTML = `
+                    <li><strong>Total Productos:</strong> <span class="stat-number">${productos.length}</span></li>
+                    <li><strong>Total Pedidos:</strong> <span class="stat-number">${pedidos.length}</span></li>
+                    <li><strong>Pedidos Pendientes:</strong> <span class="stat-number">${pedidosPendientes}</span></li>
+                    <li><strong>Pedidos Enviados:</strong> <span class="stat-number">${pedidosEnviados}</span></li>
+                    <li><strong>Pedidos Entregados:</strong> <span class="stat-number">${pedidosEntregados}</span></li>
+                    <li><strong>Pedidos Cancelados:</strong> <span class="stat-number">${pedidosCancelados}</span></li>
+                    <li><strong>Total Usuarios:</strong> <span class="stat-number">${totalUsuarios}</span></li>
+                    <li><strong>Productos sin stock:</strong> <span class="stat-number">${productosSinStock}</span></li>
+                    <li><strong>Stock total disponible:</strong> <span class="stat-number">${totalStock}</span></li>
+                    <li><strong>Productos distintos en pedidos:</strong> <span class="stat-number">${productosUnicosPedidos}</span></li>
+                    <li><strong>Fecha del primer pedido:</strong> <span>${primerPedido}</span></li>
+                    <li><strong>Fecha del último pedido:</strong> <span>${ultimoPedido}</span></li>
+                `;
+            } catch (error) {
+                showNotification('Error al cargar el dashboard', 'error');
+            }
+        }
+
+        // Llama a loadDashboard al cargar la página
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+    </script>
 </body>
 
 </html>

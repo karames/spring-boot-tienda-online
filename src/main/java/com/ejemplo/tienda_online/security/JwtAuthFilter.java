@@ -31,9 +31,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
+        // 1. Intentar obtener el token del header Authorization
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             username = jwtUtil.getUsernameFromToken(token);
+        }
+        // 2. Si no hay token en header, buscar en cookie 'jwt'
+        if (token == null) {
+            if (request.getCookies() != null) {
+                for (var cookie : request.getCookies()) {
+                    if ("jwt".equals(cookie.getName())) {
+                        token = cookie.getValue();
+                        username = jwtUtil.getUsernameFromToken(token);
+                        break;
+                    }
+                }
+            }
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);

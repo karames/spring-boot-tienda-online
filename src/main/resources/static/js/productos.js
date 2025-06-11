@@ -102,10 +102,8 @@ function mostrarProductos() {
         return;
     }
 
-    // Aplicar grid de 3 columnas
     div.className = 'productos-grid-cards';
 
-    // Ordenar productos por nombre
     let productosOrdenados = productos.slice().sort((a, b) => {
         if (!a.nombre && !b.nombre) return 0;
         if (!a.nombre) return 1;
@@ -113,7 +111,6 @@ function mostrarProductos() {
         return a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' });
     });
 
-    // Botón para agregar productos (solo admin)
     let botonAgregar = '';
     if (role === 'ADMIN') {
         botonAgregar = `<div class="producto-card" style="display:flex;align-items:center;justify-content:center;min-height:220px;">
@@ -124,7 +121,6 @@ function mostrarProductos() {
         </div>`;
     }
 
-    // Mostrar siempre tarjetas, tanto para admin como para cliente
     div.innerHTML = botonAgregar + productosOrdenados.map(p => `
         <div class="producto-card">
             <div class="producto-header" style="flex-direction:column;align-items:flex-start;">
@@ -136,8 +132,10 @@ function mostrarProductos() {
             <div class="producto-descripcion">${p.descripcion || 'Sin descripción'}</div>
             <div class="producto-precio" style="text-align:center;width:100%;">${p.precioFormateado ? p.precioFormateado : formatearPrecio(p.precio)} €</div>
             <div class="producto-acciones">
-                <button onclick="editarProducto('${p.id}')" class="btn btn-editar-producto" title="Editar ${p.nombre}">✏️</button>
-                <button onclick="eliminarProducto('${p.id}')" class="btn btn-eliminar-producto" title="Eliminar ${p.nombre}">🗑️</button>
+                ${role === 'ADMIN' ? `
+                    <button onclick="editarProducto('${p.id}')" class="btn btn-editar-producto" title="Editar ${p.nombre}">✏️</button>
+                    <button onclick="eliminarProducto('${p.id}')" class="btn btn-eliminar-producto" title="Eliminar ${p.nombre}">🗑️</button>
+                ` : ''}
                 ${role === 'CLIENTE' && p.stock > 0 ? `
                     <button onclick="agregarAlCarrito('${p.id}')" class="btn btn-primary" title="Agregar ${p.nombre} al Carrito" style="width:100%;display:block;">
                         Agregar al Carrito

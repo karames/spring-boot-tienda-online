@@ -35,10 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.clear();
 
                     // Guardar datos de sesión
-                    console.log('[auth.js] Guardando en localStorage:', { token: data.token, role: data.role, username: data.username || username });
                     localStorage.setItem('jwt', data.token);
                     localStorage.setItem('role', data.role);
                     localStorage.setItem('username', data.username || username);
+
+                    // Guardar JWT como cookie para protección backend de archivos estáticos
+                    document.cookie = `jwt=${data.token}; path=/; SameSite=Strict`;
 
                     // Mensaje de éxito
                     submitBtn.textContent = '✅ ¡Éxito! Redirigiendo...';
@@ -50,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const role = (data.role || '').toUpperCase();
                         console.log('[auth.js] Redirigiendo según rol:', role);
                         if (role === 'ADMIN') {
-                            window.location.replace('pedidos.html'); // Redirigir a pedidos.html para admin
+                            window.location.replace('admin.html'); // Redirigir a admin.html para admin
                         } else if (role === 'CLIENTE') {
                             window.location.replace('productos.html');
                         } else {
@@ -98,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Funciones auxiliares simples
 function logout() {
     localStorage.clear();
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
 }
 
 function isAuthenticated() {
